@@ -20,9 +20,10 @@ async function init() {
     */
    let params = 'query=pasta&maxFat=25&nuber=2';
    await fetchParams(params).then(function(res){
+    console.log(res.results);
     const fetchedRecipes = res.results;
     for (let i = 0; i < fetchedRecipes.length; i++) {
-      recipeData[fetchedRecipes[i].title] = fetchedRecipes[i].id;
+      recipeData[fetchedRecipes[i].title] = fetchedRecipes[i];
     }
    })
 

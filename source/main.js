@@ -74,9 +74,9 @@ function bindShowMore(btn, carousel, localRecipe) {
     for (let i = 0; i < 3; i++) {
       carousel.removeChild(carousel.querySelector('recipe-card'));
     }
-    for (let i = curPtr; i < curPtr + 3; i++) {
+    for (let i = 0; i < 3; i++) {
       const recipe = document.createElement('recipe-card');
-      recipe.data = localRecipe[i];
+      recipe.data = localRecipe[i + curPtr];
       carousel.insertBefore(recipe, btn);
     }
   })
@@ -97,12 +97,13 @@ function bindShowLess(btn, carousel, localRecipe) {
       window.alert('no more recipe to show');
       return;
     }
+    
     for (let i = 0; i < 3; i++) {
       carousel.removeChild(carousel.querySelector('recipe-card'));
     }
-    for (let i = curPtr; i < curPtr + 3; i++) {
+    for (let i = 0; i < 3; i++) {
       const recipe = document.createElement('recipe-card');
-      recipe.data = localRecipe[i];
+      recipe.data = localRecipe[i + curPtr];
       carousel.insertBefore(recipe, carousel.querySelector('.showMore'));
     }
   })

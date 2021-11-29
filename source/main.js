@@ -8,6 +8,10 @@ const apiKeys = ["4d388ae5990f41f195ca41c0f0a1a5bb", "199c50e0bf5a46d0b9b937e10d
 //used to store recipe's id for specific search. recipeData[recipeName] = recipeId
 const recipeData = [];
 
+
+//carousel buttons
+//var buttons = [document.querySelector('.forward'), document.querySelector('.back')];
+
 window.addEventListener('DOMContentLoaded', init);
 
 async function init() {

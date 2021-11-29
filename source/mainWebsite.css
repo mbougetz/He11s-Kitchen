@@ -60,9 +60,16 @@ nav a {
   text-decoration: none;
 }
 
+button.showMore {
+  width: 5vh;
+  height: 10vh;
+  content: 'Show More';
+}
+
 #carousel {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 li a:hover {

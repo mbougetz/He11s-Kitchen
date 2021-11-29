@@ -1,37 +1,18 @@
 import { fetchParams, fetchById } from "./service/api.js";
-const recipes = []; // instead of using json files, we want recipes from the API
-const recipeData = {};  // used to access the recipe data from Spoonacular
 
 //We're using the free Spoonacular api plan; each key in this array can do 150 requests per day. 
 //Pls make a free Spoonacular api account and add your key to this array!
 const apiKeys = ["4d388ae5990f41f195ca41c0f0a1a5bb", "199c50e0bf5a46d0b9b937e10db957c5", "c0444bbab49f48e1a3b5afa0054f3f67"];
 
 //router
-const router = {};
+//used to store recipe's id for specific search. recipeData[recipeName] = recipeId
+const recipeData = [];
 
 window.addEventListener('DOMContentLoaded', init);
 
 async function init() {
-  var breakfastRecipe = [];
-  
-  await fetchParams('query=breakfast').then(function (res) {
-    const carousel = document.createElement('div');
-    carousel.id = 'carousel';
-    for (let i = 0; i < res.results.length; i++) {
-
-      // create recipe card for each recipe fetched
-      breakfastRecipe[i] = res.results[i].id;
-      console.log('testing')
-      console.log(breakfastRecipe[i]);
-      const recipeCard = document.createElement('recipe-card');
-      recipeCard.data = res.results[i];
-      if (i < 3) {
-        // show only three recipe in each carousel
-        carousel.appendChild(recipeCard);
-      }
-      document.querySelector('.recipes-wrapper').appendChild(carousel);
-    }
-  })
+  const breakfast = createRecipe('breakfast');
+  // const lunch = createRecipe('lunch');
   let searchInput = '';
   //record the search input
   document.querySelector('input').addEventListener('input', (e) => { searchInput += e.data });
@@ -41,7 +22,58 @@ async function init() {
 
 }
 
-// /*NOTE: if you're getting a 402 error in the console because the number of queries for the day have been used up, change the number x in 'apiKeys[x]' 
+async function createRecipe(selector) {
+  //used to store fetched recipe that stored in local base
+  const localRecipe = [];
+  await fetchParams(`query=${selector}`).then(function(res) {
+    const carousel = document.createElement('div');
+    carousel.id = 'carousel';
+    for (let i = 0; i < res.results.length; i++) {
+      localRecipe[i] = res.results[i];
+      recipeData[res.results[i].title] = res.results[i].id
+      // create recipe card for each recipe fetched
+      const recipeCard = document.createElement('recipe-card');
+      recipeCard.data = res.results[i];
+      if (i < 3) {
+        // show only three recipe in each carousel
+        carousel.appendChild(recipeCard);
+      }
+    }
+    // append showMore button to the carousel. The button has unique id in pattern selector-showMore, eg.lunch-showMore
+    const showMore = document.createElement('button');
+    showMore.setAttribute('class', 'showMore');
+    showMore.id = `${selector}-showMore`;
+    carousel.appendChild(showMore);
+    bindShowMore(showMore, carousel, localRecipe)
+    document.querySelector('.recipes-wrapper').appendChild(carousel);
+  })
+  return localRecipe;
+}
+function bindShowMore(btn, carousel, localRecipe) {
+  let curPtr = 0;
+  btn.addEventListener('click', () => {
+    for (let i = 0; i < localRecipe.length/3; i++) {
+      if (carousel.querySelector('recipe-card').data.title == localRecipe[i*3].title) {
+        curPtr = (i+1)*3;
+        break;
+      }
+    }
+    if (curPtr >= localRecipe.length) {
+      window.alert('no more recipe to show');
+      return;
+    }
+    for (let i = 0; i < 3; i++) {
+      carousel.removeChild(carousel.querySelector('recipe-card'));
+    }
+    for (let i = curPtr + 2; i >= curPtr; i--) {
+      const recipe = document.createElement('recipe-card');
+      recipe.data = localRecipe[i];
+      carousel.prepend(recipe);
+    }
+  })
+}
+
+// /*NOTE: if you're getting a 402 error in the console because the number of queries for the day have been used up, change the number x in 'apiKeys[x]'
 // in the following two functions to a different value*/
 
 

@@ -1,4 +1,4 @@
-var key = "c0444bbab49f48e1a3b5afa0054f3f67";
+var key = "c629e61a6c09414ab5939fbb80bf2b07";
 export async function fetchById (id) {
   return new Proimise((resolve, reject) => {
     fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${key}`)

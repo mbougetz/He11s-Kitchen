@@ -21,7 +21,6 @@ async function init() {
   //record the search input
   document.querySelector('input').addEventListener('input', (e) => { searchInput += e.data });
   document.getElementById('search-btn').addEventListener('click', () => {
-    addCarouselsToPage(searchInput, 10);
   })
 
 }

@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', init);
 
 async function init() {
   const breakfast = createCarousel('breakfast');
-  // const lunch = createRecipe('lunch');
+  const lunch = createCarousel('lunch');
   let searchInput = '';
   //record the search input
   document.querySelector('input').addEventListener('input', (e) => { searchInput += e.data });

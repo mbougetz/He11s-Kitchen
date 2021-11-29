@@ -29,7 +29,8 @@ async function createCarousel(selector) {
   const localRecipe = [];
   await fetchParams(`query=${selector}`).then(function(res) {
     const carousel = document.createElement('div');
-    carousel.id = 'carousel';
+    // set the div's carousel
+    carousel.setAttribute('class', 'carousel');
     for (let i = 0; i < res.results.length; i++) {
       localRecipe[i] = res.results[i];
       recipeData[res.results[i].title] = res.results[i].id

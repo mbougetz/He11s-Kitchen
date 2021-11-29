@@ -12,156 +12,150 @@ const router = {};
 window.addEventListener('DOMContentLoaded', init);
 
 async function init() {
-
-  console.log("initiating");
-    /*
-    try {
-      await fetchRecipes();
-    } catch (err) {
-      console.log(`Error fetching recipes: ${err}`);
-      return;
-    }
-    */
-   let params = 'query=pasta&maxFat=25&nuber=2';
-   await fetchParams(params).then(function(res){
-    console.log(res.results);
-    const fetchedRecipes = res.results;
-    for (let i = 0; i < fetchedRecipes.length; i++) {
-      recipeData[fetchedRecipes[i].title] = fetchedRecipes[i];
-    }
-   })
-
-    //createRecipeCards();
-    //bindShowMore();
-    //addRecipesToPage();
-
-    //Manually add two different carousels
-    await addCarouselsToPage("pasta", 3);
-    await addCarouselsToPage("burger", 3); 
-
-    /*await getRecipeList("pasta", 3).then((response) =>{
-      console.log(response);
-    });*/
-
-    
-
-}
-
-/*NOTE: if you're getting a 402 error in the console because the number of queries for the day have been used up, change the number x in 'apiKeys[x]' 
-in the following two functions to a different value*/
-
-
-//Returns json data of resultant API search
-//query = search term i.e. "pasta", numResults = number of recipes to return from search results
-async function queryApi(query, numResults){
-
-  const response = await fetch('https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKeys[1] + '&query=' + query + '&number=' + numResults);
+  var breakfastRecipe = [];
   
-  return response.json();
-  
-}
+  await fetchParams('query=breakfast').then(function (res) {
+    const carousel = document.createElement('div');
+    carousel.id = 'carousel';
+    for (let i = 0; i < res.results.length; i++) {
 
-
-//Returns json data of recipe with id specified in parameter 'id'
-async function getRecipe(id){
-  //Query API by specific recipe id
-  const response = await fetch('https://api.spoonacular.com/recipes/'+ id +'/information?apiKey=' + apiKeys[1]);
-  
-  //Return data in json format
-  return response.json();
-
-}
-
-//Search API for numResults number of recipes matching the query parameter;
-//Returns an array of recipe ids matching the search parameters
-async function getRecipeList(query, numResults){
-  var recipeResults = [];
-
-  //Query api
-  await queryApi(query, numResults).then((value) => {
-
-    //Parse json, put ids of returned recipes into recipeResults
-    for(let i = 0; i < numResults; i++){ //TODO: error checking in case less than numResults results are actually returned
-      recipeResults[i] = value.results[i].id;
+      // create recipe card for each recipe fetched
+      breakfastRecipe[i] = res.results[i].id;
+      console.log('testing')
+      console.log(breakfastRecipe[i]);
+      const recipeCard = document.createElement('recipe-card');
+      recipeCard.data = res.results[i];
+      if (i < 3) {
+        // show only three recipe in each carousel
+        carousel.appendChild(recipeCard);
+      }
+      document.querySelector('.recipes-wrapper').appendChild(carousel);
     }
-
-    //console.log(recipeResults)
-
-  });
-
-  return recipeResults;
-
-}
-
-
-
-
-//load all recipes
-async function fetchRecipes() {
-    return new Promise((resolve, reject) => {
-      recipes.forEach(recipe => {
-        fetch(recipe)
-          // CHANGE: implement with API
-          .then(response => response.json())
-          .then(data => {
-            // This grabs the page name from the URL in the array above
-            data['page-name'] = recipe.split('/').pop().split('.')[0];
-            recipeData[recipe] = data;
-            if (Object.keys(recipeData).length == recipes.length) {
-              resolve();
-            }
-          })
-          .catch(err => {
-            console.log(`Error loading the ${recipe} recipe`);
-            reject(err);
-          });
-      });
-    });
-}
-
-
-//Create carousel, add to page
-async function addCarouselsToPage(searchQuery, numRecipes){
-
-  // Makes a new empty carousel
-  const newCarousel = document.createElement('card-carousel');
-
-  //To be filled with all relevant recipe cards
-  var carouselCards = [];
-
-  //Queries api, stores all recipe ids matching search parameters in recipeList, an array of ids
-  var recipeList; 
-  await getRecipeList(searchQuery, numRecipes).then((value) => {
-
-    recipeList = value;
-
-
-  });
-
-  //Caps maximum number of recipes in a carousel to prevent accidental excessive queries
-  const MAX_RECIPES_IN_CAROUSEL = 12;
-  for (let i = 0; i < recipeList.length && i < MAX_RECIPES_IN_CAROUSEL; i++){ 
-
-    // Makes a new recipe card
-    const recipeCard = document.createElement('recipe-card');
-
-    //Gets a recipe id from recipeList, queries the api for the recipe's data, stores the data in the card
-    await getRecipe(recipeList[i]).then((value) => {
-      console.log(value);
-      recipeCard.data = value;
-
-    });
-
-
-    //Stores the card into the array carouselCards
-    carouselCards[i] = recipeCard;
-
-  }
-
-  //Inserts all the recipe cards in carouselCards into the carousel
-  newCarousel.createCardCarousel(carouselCards);
-
-  //Appends the newly created and populated carousel to the class recipes-wrapper in the document
-  document.querySelector('.recipes-wrapper').appendChild(newCarousel);
+  })
+  let searchInput = '';
+  //record the search input
+  document.querySelector('input').addEventListener('input', (e) => { searchInput += e.data });
+  document.getElementById('search-btn').addEventListener('click', () => {
+    addCarouselsToPage(searchInput, 10);
+  })
 
 }
+
+// /*NOTE: if you're getting a 402 error in the console because the number of queries for the day have been used up, change the number x in 'apiKeys[x]' 
+// in the following two functions to a different value*/
+
+
+// //Returns json data of resultant API search
+// //query = search term i.e. "pasta", numResults = number of recipes to return from search results
+// async function queryApi(query, numResults){
+
+//   const response = await fetch('https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKeys[1] + '&query=' + query + '&number=' + numResults);
+
+//   return response.json();
+
+// }
+
+
+// //Returns json data of recipe with id specified in parameter 'id'
+// async function getRecipe(id){
+//   //Query API by specific recipe id
+//   const response = await fetch('https://api.spoonacular.com/recipes/'+ id +'/information?apiKey=' + apiKeys[1]);
+
+//   //Return data in json format
+//   return response.json();
+
+// }
+
+// //Search API for numResults number of recipes matching the query parameter;
+// //Returns an array of recipe ids matching the search parameters
+// async function getRecipeList(query, numResults){
+//   var recipeResults = [];
+
+//   //Query api
+//   await queryApi(query, numResults).then((value) => {
+
+//     //Parse json, put ids of returned recipes into recipeResults
+//     for(let i = 0; i < numResults; i++){ //TODO: error checking in case less than numResults results are actually returned
+//       recipeResults[i] = value.results[i].id;
+//     }
+
+//     //console.log(recipeResults)
+
+//   });
+
+//   return recipeResults;
+
+// }
+
+
+
+
+// //load all recipes
+// async function fetchRecipes() {
+//     return new Promise((resolve, reject) => {
+//       recipes.forEach(recipe => {
+//         fetch(recipe)
+//           // CHANGE: implement with API
+//           .then(response => response.json())
+//           .then(data => {
+//             // This grabs the page name from the URL in the array above
+//             data['page-name'] = recipe.split('/').pop().split('.')[0];
+//             recipeData[recipe] = data;
+//             if (Object.keys(recipeData).length == recipes.length) {
+//               resolve();
+//             }
+//           })
+//           .catch(err => {
+//             console.log(`Error loading the ${recipe} recipe`);
+//             reject(err);
+//           });
+//       });
+//     });
+// }
+
+
+// //Create carousel, add to page
+// async function addCarouselsToPage(searchQuery, numRecipes){
+
+//   // Makes a new empty carousel
+//   const newCarousel = document.createElement('card-carousel');
+
+//   //To be filled with all relevant recipe cards
+//   var carouselCards = [];
+
+//   //Queries api, stores all recipe ids matching search parameters in recipeList, an array of ids
+//   var recipeList; 
+//   await getRecipeList(searchQuery, numRecipes).then((value) => {
+
+//     recipeList = value;
+
+
+//   });
+
+//   //Caps maximum number of recipes in a carousel to prevent accidental excessive queries
+//   const MAX_RECIPES_IN_CAROUSEL = 12;
+//   for (let i = 0; i < recipeList.length && i < MAX_RECIPES_IN_CAROUSEL; i++){ 
+
+//     // Makes a new recipe card
+//     const recipeCard = document.createElement('recipe-card');
+
+//     //Gets a recipe id from recipeList, queries the api for the recipe's data, stores the data in the card
+//     await getRecipe(recipeList[i]).then((value) => {
+//       // console.log(value);
+//       recipeCard.data = value;
+
+//     });
+
+
+//     //Stores the card into the array carouselCards
+//     carouselCards[i] = recipeCard;
+
+//   }
+
+//   //Inserts all the recipe cards in carouselCards into the carousel
+//   newCarousel.createCardCarousel(carouselCards);
+
+//   //Appends the newly created and populated carousel to the class recipes-wrapper in the document
+//   document.querySelector('.recipes-wrapper').appendChild(newCarousel);
+
+// }

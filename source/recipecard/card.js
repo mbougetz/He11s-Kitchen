@@ -24,8 +24,6 @@ class Card extends HTMLElement{
             justify-content: center;
           }
 
-          
-          
           article {
             display: flex;
             flex-direction: column;
@@ -35,7 +33,9 @@ class Card extends HTMLElement{
             border: 2px;
             padding: 15px;
             margin: 2rem;
-            width: 250px;
+            width: 25vh;
+            margin-left:5vh;
+            margin-right:5vh;
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
           }
           
@@ -115,10 +115,11 @@ class Card extends HTMLElement{
 
         const title = document.createElement('p');
         title.classList.add('title');
-
+        
+        console.log(cardData);
 
         //Recipe Link
-        const hyperLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"; //TEMP VAL; Temporary url to recipe
+        const hyperLink = cardData.sourceUrl; //TEMP VAL; Temporary url to recipe
         const link = document.createElement('a');
         link.setAttribute('href', hyperLink);
         link.innerText = titleText;
@@ -132,9 +133,11 @@ class Card extends HTMLElement{
         const thumbnailImg = document.createElement('img');
         thumbnailImg.setAttribute('src', thumbnailLink);
         thumbnailImg.setAttribute('alt', titleText);
+        
 
         //Recipe reviews
-        const ratingValue = 4.5; //TEMP VAL; reviews to be added later
+        const ratingValue = cardData.spoonacularScore/20;
+
         const numRatings = 327; //^^
         const rating = document.createElement('div');
         rating.classList.add('rating');
@@ -157,7 +160,7 @@ class Card extends HTMLElement{
 
 
         //TODO: Change picture based on # of stars
-
+        
 
         //Recipe cook time
         const cookTime = cardData.readyInMinutes; //TEMP VAL; get from API
@@ -167,27 +170,27 @@ class Card extends HTMLElement{
         time.innerText = cookTime + " Minutes"; //TEMP VAL;convert time from API into readable string
 
         //Recipe ingredients
-        var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
-        for(let i = 0; i < cardData.extendedIngredients.length; i++){
-          ingredientsList += cardData.extendedIngredients[i].originalString;
-          if(i != cardData.extendedIngredients.length-1) ingredientsList += ", ";
-        }
+        // var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
+        // for(let i = 0; i < cardData.extendedIngredients.length; i++){
+        //   ingredientsList += cardData.extendedIngredients[i].originalString;
+        //   if(i != cardData.extendedIngredients.length-1) ingredientsList += ", ";
+        // }
 
-        console.log("Recipe ingredients: " + ingredientsList);
+        // console.log("Recipe ingredients: " + ingredientsList);
 
-        const ingredients = document.createElement('p');
-        ingredients.classList.add('ingredients');
-        ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
+        // const ingredients = document.createElement('p');
+        // ingredients.classList.add('ingredients');
+        // ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
 
         //TODO: Add recipe tag to card
-
+        
 
         //Add elements to recipe card
         cardArticle.appendChild(thumbnailImg);
         cardArticle.appendChild(title);
         cardArticle.appendChild(rating);
         cardArticle.appendChild(time);
-        cardArticle.appendChild(ingredients);
+        // cardArticle.appendChild(ingredients);
 
 
         this.shadowRoot.append(cardStyle, cardArticle);

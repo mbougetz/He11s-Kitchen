@@ -60,6 +60,11 @@ nav a {
   text-decoration: none;
 }
 
+#carousel {
+  display: flex;
+  justify-content: center;
+}
+
 li a:hover {
   background-color: #615f5f;
 }

@@ -66,6 +66,12 @@ button.showMore {
   content: 'Show More';
 }
 
+button.showLess {
+  width: 5vh;
+  height: 10vh;
+  content: 'Show More';
+}
+
 #carousel {
   display: flex;
   justify-content: center;

@@ -198,9 +198,6 @@ class Card extends HTMLElement{
     }
 
     get data(){ return this.json;}
-
-
-
 }
 
 

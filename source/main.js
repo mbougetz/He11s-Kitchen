@@ -9,6 +9,7 @@ window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   console.log("initiating");
+  
   /*
   try {
     await fetchRecipes();
@@ -26,6 +27,9 @@ async function init() {
    }
   })*/
 
+  //Initialize localStorage for use
+  initLocalStorage();
+
   //Bind search events to search bar
   bindSubPages();
 
@@ -34,6 +38,16 @@ async function init() {
 
   //Display homepage by default
   homeCarousels(6);
+}
+
+//If no recipes have been stored, creates an array to store them in
+function initLocalStorage(){
+  if(!localStorage.getItem('localRecipes')){
+    let emptyArr = [];
+    localStorage.setItem('localRecipes', JSON.stringify(emptyArr));
+  }
+
+
 }
 
 function bindSubPages() {
@@ -211,15 +225,69 @@ function clearCarousels() {
 async function homeCarousels(numResults) {
   clearCarousels();
 
-  //load carousel of local recipes
 
-  await addCarouselsToPage("pasta", numResults, "Top Results for Pasta");
-  await addCarouselsToPage("burger", numResults, "Top Burger Recipes");
-  await addCarouselsToPage(
-    "thanksgiving",
-    numResults,
-    "Top Thanksgiving Recipes"
-  );
+  //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
+  let localRecipes = JSON.parse(localStorage.getItem('localRecipes'));
+  if (localRecipes && localRecipes.length != 0)loadLocalRecipes();
+  else await addCarouselsToPage("pasta", numResults, "Top Results for Pasta");
+  
+  await addCarouselsToPage("burger", numResults, "Top Burger Recipes"); 
+  await addCarouselsToPage("thanksgiving", numResults, "Top Thanksgiving Recipes");
+}
+
+//Loads the locally stored recipes and adds to carousel and then appends carousel to page
+function loadLocalRecipes(){
+  //Retrieve the array of local recipes from localstorage
+  let localRecipes = JSON.parse(localStorage.getItem('localRecipes'));
+
+  let stringifiedRecipies = [];
+
+
+  //Parse each stored recipe from json format back into js-useable data 
+  //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
+  for(let i = 0; i < localRecipes.length; i++){
+   //stringifiedRecipies[i] = JSON.parse(localRecipes[i]).json;
+    stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
+
+  }
+
+
+  //Create an empty carousel
+  let newCarousel = document.createElement('card-carousel');
+  
+  //Create an array of all recipe data
+  let newCardsArray = [];
+  for(let i = 0; i < stringifiedRecipies.length; i++){
+    let newCard = document.createElement('recipe-card');
+    newCard.data = stringifiedRecipies[i].data;
+    newCardsArray[i] = newCard;
+  }
+
+  //Add all recipe cards to the carousel
+  newCarousel.createCardCarousel(newCardsArray);
+
+  //Create banner message for new carousel
+  let cardTitle = document.createElement("h2");
+  cardTitle.innerText = "Locally Created Recipes";
+  cardTitle.setAttribute('id', 'carousel-title');
+  cardTitle.innerHTML = cardTitle.innerText + '<i class="fa fa-long-arrow-right"><\/i>';
+  document.querySelectorAll('.recipes-wrapper')[carouselNum].appendChild(cardTitle);
+
+
+  //Appends the newly created and populated carousel to the class recipes-wrapper in the document
+  document.querySelectorAll('.recipes-wrapper')[carouselNum].appendChild(newCarousel);
+
+  //Bind the back and forwards buttons to the carousel
+  document.querySelectorAll('.back')[carouselNum].addEventListener('click', () => {
+    newCarousel.prevCards();
+  });
+
+  document.querySelectorAll('.forward')[carouselNum].addEventListener('click', () => {
+    newCarousel.nextCards();
+  });
+
+  carouselNum++;
+
 }
 
 //The specific carousels to load on the breakfast page
@@ -230,7 +298,6 @@ async function breakfastCarousels(numResults) {
 
   await addCarouselsToPage("breakfast", numResults, "Top Breakfast Recipes");
   await addCarouselsToPage("pancake", numResults, "Best Pancakes Around");
-  await addCarouselsToPage("egg", numResults, "Top Egg Recipes");
   await addCarouselsToPage(
     "breakfast",
     numResults,
@@ -282,6 +349,8 @@ async function dessertCarousels(numResults) {
   );
 }
 
+//Search spoonacular for the value currently in the search bar
+//Param: searchingFromHero is true if search is clicked from the hero search bar, false if from the top search bar
 async function searchCarousels(searchingFromHero) {
   clearCarousels();
 

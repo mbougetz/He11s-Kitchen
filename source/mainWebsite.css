@@ -61,15 +61,27 @@ nav a {
 }
 
 button.showMore {
-  width: 5vh;
-  height: 10vh;
-  content: 'Show More';
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  width: 3vh;
+  height: 3vh;
+  background-color: white;
 }
 
 button.showLess {
-  width: 5vh;
-  height: 10vh;
-  content: 'Show More';
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  width: 3vh;
+  height: 3vh;
+  background-color: white;
 }
 
 .carousel {
@@ -96,10 +108,6 @@ li a:hover {
   background-repeat: no repeat;
   background-position: center center;
   background-attachment: fixed;
-}
-
-.card-carousel {
-  display: inline-block; 
 }
 
 .hero h1 {
@@ -144,4 +152,11 @@ li a:hover {
   width: 120px;
 }
 
+.section-recipes-expand {
+  width: 85vh;
+  align-items: center;
+}
 
+section.hide {
+  display: none;
+}

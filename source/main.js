@@ -17,8 +17,8 @@ window.addEventListener('DOMContentLoaded', init);
 
 const router = new Router();
 async function init() {
-  document.querySelector('.section-recipes-expand').classList.remove('shown');
-  document.querySelector('.section-recipes-display').classList.add('shown');
+  document.querySelector('.section-recipes-expand').classList.add('hide');
+
 
   const breakfast = createCarousel('breakfast');
   const lunch = createCarousel('lunch');
@@ -29,7 +29,7 @@ async function init() {
 async function createCarousel(selector) {
   //used to store fetched recipe that stored in local base
   const localRecipe = [];
-  await fetchParams(`query=${selector}`).then(function (res) {
+  await fetchParams(`query=${selector}&addRecipeNutrition=true&number=24`).then(function (res) {
     const carousel = document.createElement('div');
     // set the div's carousel
     carousel.setAttribute('class', 'carousel');
@@ -41,12 +41,12 @@ async function createCarousel(selector) {
       recipeCard.data = res.results[i];
       bindRecipeExpand(recipeCard, function () {
         fetchById(recipeCard.data.id).then(function (res) {
-          document.querySelector('.section-recipes-expand').classList.add('shown');
-          document.querySelector('.section-recipes-display').classList.remove('shown');
-          document.querySelector('.recipe-expand').data = res.json();
+          document.querySelector('.section-recipes-expand').classList.remove('hide');
+          document.querySelector('.section-recipes-display').classList.add('hide');
+          document.querySelector('recipe-expand').data = res;
+          console.log(document.querySelector('.section-recipes-display').classList)
         }
         )
-          .catch(console.log(error))
       });
       if (i < 3) {
         // show only three recipe in each carousel
@@ -92,6 +92,7 @@ function bindShowMore(btn, carousel, localRecipe) {
     }
   })
 }
+
 /* the function bind an eventlistener to the prev button in the carousel. By clicking the button, previous 3 recipes will be shown */
 function bindShowLess(btn, carousel, localRecipe) {
   let curPtr = 0;

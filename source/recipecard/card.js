@@ -7,8 +7,6 @@ class Card extends HTMLElement{
     set data(cardData){
 
         if(!cardData) return; //Exit function if data DNE
-
-
         this.json = cardData;
 
         const cardStyle = document.createElement('style');
@@ -138,7 +136,6 @@ class Card extends HTMLElement{
         //Recipe reviews
         const ratingValue = cardData.spoonacularScore/20;
 
-        const numRatings = 327; //^^
         const rating = document.createElement('div');
         rating.classList.add('rating');
 
@@ -148,20 +145,8 @@ class Card extends HTMLElement{
         <img src="images\\5-stars-red.jpeg" alt="5 stars"></img>
         `;
 
-        if (numRatings != 0) {
-          rating.innerHTML += `<span>(${numRatings})</span>`;
-        }
-        //Maybe do 
-        else {
-        rating.innerHTML = `
-          <span>No Reviews</span>
-        `;
-        }
-
-
         //TODO: Change picture based on # of stars
         
-
         //Recipe cook time
         const cookTime = cardData.readyInMinutes; //TEMP VAL; get from API
         // console.log("Recipe cook time: " + cookTime);
@@ -170,27 +155,23 @@ class Card extends HTMLElement{
         time.innerText = cookTime + " Minutes"; //TEMP VAL;convert time from API into readable string
 
         //Recipe ingredients
-        // var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
-        // for(let i = 0; i < cardData.extendedIngredients.length; i++){
-        //   ingredientsList += cardData.extendedIngredients[i].originalString;
-        //   if(i != cardData.extendedIngredients.length-1) ingredientsList += ", ";
-        // }
+        var ingredientsList //TEMP VAL; Get list of ingredients, store here as plaintext
+        for(let i = 0; i < cardData.nutrition.ingredients.length; i++){
+          ingredientsList += cardData.nutrition.ingredients[i].name;
+          if(i != cardData.nutrition.ingredients.length-1) ingredientsList += ", ";
+        }
 
-        // console.log("Recipe ingredients: " + ingredientsList);
+        const ingredients = document.createElement('p');
+        ingredients.classList.add('ingredients');
+        ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
 
-        // const ingredients = document.createElement('p');
-        // ingredients.classList.add('ingredients');
-        // ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
-
-        //TODO: Add recipe tag to card
         
-
         //Add elements to recipe card
         cardArticle.appendChild(thumbnailImg);
         cardArticle.appendChild(title);
         cardArticle.appendChild(rating);
         cardArticle.appendChild(time);
-        // cardArticle.appendChild(ingredients);
+        cardArticle.appendChild(ingredients);
 
 
         this.shadowRoot.append(cardStyle, cardArticle);

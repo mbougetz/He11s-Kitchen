@@ -1,39 +1,36 @@
-class Card extends HTMLElement{
-    constructor(){
-        super(); //Inherit from ancestor
-        this.attachShadow({ mode: 'open'});
-    }
+class Card extends HTMLElement {
+  constructor() {
+    super(); //Inherit from ancestor
+    this.attachShadow({ mode: 'open' });
+  }
 
-    set data(cardData){
+  set data(cardData) {
 
-        if(!cardData) return; //Exit function if data DNE
-        this.json = cardData;
+    if (!cardData) return; //Exit function if data DNE
+    this.json = cardData;
 
-        const cardStyle = document.createElement('style');
-        const cardArticle = document.createElement('article');
+    const cardStyle = document.createElement('style');
+    const cardArticle = document.createElement('article');
 
 
-        //For now this is literally just card.css in its entirety
-        cardStyle.innerHTML = `
+    //For now this is literally just card.css in its entirety
+    cardStyle.innerHTML = `
         .recipes-wrapper {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(12rem, 16rem));
-            grid-gap: 4.3rem;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(12rem, 16rem));
+            grid-gap: 8rem;
+            justify-content: center;
           }
 
           article {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
             border-radius: 15px;
             border: 2px;
             padding: 15px;
             margin: 2rem;
             width: 25vh;
-            margin-left:5vh;
-            margin-right:5vh;
+            height: 35vh;
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
           }
           
@@ -44,9 +41,9 @@ class Card extends HTMLElement{
           }
           
           .card-image {
-            object-fit: cover;
-            width: 100%;
-            height: 250px;
+             object-fit: cover;
+             width: 100%;
+             height: 250px;
           }
           
           p.title {
@@ -101,84 +98,83 @@ class Card extends HTMLElement{
           .hidden {
             display: none;
           }
-          
           `;
 
-        
 
-        //Recipe Title
-        //const titleText = "Temp Title Text"; //TEMP VAL; get title from API
-        const titleText = cardData.title;
-        // console.log("Recipe title: " + titleText);
 
-        const title = document.createElement('p');
-        title.classList.add('title');
-        
-        // console.log(cardData);
+    //Recipe Title
+    //const titleText = "Temp Title Text"; //TEMP VAL; get title from API
+    const titleText = cardData.title;
+    // console.log("Recipe title: " + titleText);
 
-        //Recipe Link
-        const hyperLink = cardData.sourceUrl; //TEMP VAL; Temporary url to recipe
-        const link = document.createElement('a');
-        link.setAttribute('href', hyperLink);
-        link.innerText = titleText;
-        title.appendChild(link);
+    const title = document.createElement('p');
+    title.classList.add('title');
 
-        //Recipe Thumbnail
-        //const thumbnailLink = "images/dumpling.jpg";
-        const thumbnailLink = cardData.image;
-        // console.log("Recipe image url: " + thumbnailLink);
+    // console.log(cardData);
 
-        const thumbnailImg = document.createElement('img');
-        thumbnailImg.setAttribute('src', thumbnailLink);
-        thumbnailImg.setAttribute('alt', titleText);
-        
+    //Recipe Link
+    const hyperLink = cardData.sourceUrl; //TEMP VAL; Temporary url to recipe
+    const link = document.createElement('a');
+    link.setAttribute('href', hyperLink);
+    link.innerText = titleText;
+    title.appendChild(link);
 
-        //Recipe reviews
-        const ratingValue = cardData.spoonacularScore/20;
+    //Recipe Thumbnail
+    //const thumbnailLink = "images/dumpling.jpg";
+    const thumbnailLink = cardData.image;
+    // console.log("Recipe image url: " + thumbnailLink);
 
-        const rating = document.createElement('div');
-        rating.classList.add('rating');
+    const thumbnailImg = document.createElement('img');
+    thumbnailImg.setAttribute('src', thumbnailLink);
+    thumbnailImg.setAttribute('alt', titleText);
 
-        //TEMP VAL; number of stars to display
-        rating.innerHTML = `
+
+    //Recipe reviews
+    const ratingValue = cardData.spoonacularScore / 20;
+
+    const rating = document.createElement('div');
+    rating.classList.add('rating');
+
+    //TEMP VAL; number of stars to display
+    rating.innerHTML = `
         <span>${ratingValue}</span>
         <img src="images\\5-stars-red.jpeg" alt="5 stars"></img>
         `;
 
-        //TODO: Change picture based on # of stars
-        
-        //Recipe cook time
-        const cookTime = cardData.readyInMinutes; //TEMP VAL; get from API
-        // console.log("Recipe cook time: " + cookTime);
+    //TODO: Change picture based on # of stars
 
-        const time = document.createElement('time');
-        time.innerText = cookTime + " Minutes"; //TEMP VAL;convert time from API into readable string
+    //Recipe cook time
+    const cookTime = cardData.readyInMinutes; //TEMP VAL; get from API
+    // console.log("Recipe cook time: " + cookTime);
 
-        //Recipe ingredients
-        var ingredientsList //TEMP VAL; Get list of ingredients, store here as plaintext
-        for(let i = 0; i < cardData.nutrition.ingredients.length; i++){
-          ingredientsList += cardData.nutrition.ingredients[i].name;
-          if(i != cardData.nutrition.ingredients.length-1) ingredientsList += ", ";
-        }
+    const time = document.createElement('time');
+    time.innerText = cookTime + " Minutes"; //TEMP VAL;convert time from API into readable string
 
-        const ingredients = document.createElement('p');
-        ingredients.classList.add('ingredients');
-        ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
-
-        
-        //Add elements to recipe card
-        cardArticle.appendChild(thumbnailImg);
-        cardArticle.appendChild(title);
-        cardArticle.appendChild(rating);
-        cardArticle.appendChild(time);
-        cardArticle.appendChild(ingredients);
-
-
-        this.shadowRoot.append(cardStyle, cardArticle);
-
+    //Recipe ingredients
+    var ingredientsList //TEMP VAL; Get list of ingredients, store here as plaintext
+    for (let i = 0; i < cardData.nutrition.ingredients.length; i++) {
+      ingredientsList += cardData.nutrition.ingredients[i].name;
+      if (i != cardData.nutrition.ingredients.length - 1) ingredientsList += ", ";
     }
 
-    get data(){ return this.json;}
+    const ingredients = document.createElement('p');
+    ingredients.classList.add('ingredients');
+    ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
+
+
+    //Add elements to recipe card
+    cardArticle.appendChild(thumbnailImg);
+    cardArticle.appendChild(title);
+    cardArticle.appendChild(rating);
+    cardArticle.appendChild(time);
+    cardArticle.appendChild(ingredients);
+
+
+    this.shadowRoot.append(cardStyle, cardArticle);
+
+  }
+
+  get data() { return this.json; }
 }
 
 

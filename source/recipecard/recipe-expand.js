@@ -15,11 +15,12 @@ class RecipeExpand extends HTMLElement {
             width: 85 vh
         }
       `
-        const body = document.createElement('section');
-        body.classList.add('body');
         const title = document.createElement('h1');
-        title.classList.add('title');
+        title.classList.add('title-exp');
         title.innerText = cardData.title
+
+        const desc = document.createElement('section');
+        desc.setAttribute('class', 'recipe-desc-exp');
 
         const mainImg = document.createElement('img');
         mainImg.src = cardData.image;
@@ -27,12 +28,12 @@ class RecipeExpand extends HTMLElement {
         mainImg.setAttribute('class', 'mainImg');
 
         const description = document.createElement('div');
-        description.setAttribute('class', 'descriptionBox');
+        description.setAttribute('class', 'descriptionBox description');
         description.innerHTML = cardData.summary;
 
-        article.appendChild(title);
-        article.appendChild(mainImg);
-        article.appendChild(description);
+        desc.appendChild(mainImg);
+        desc.appendChild(description)
+
         this.shadowRoot.append(style, article);
     }
 } 

@@ -48,7 +48,7 @@ async function createCarousel(selector) {
         }
         )
       });
-      if (i < 3) {
+      if (i < 5) {
         // show only three recipe in each carousel
         carousel.appendChild(recipeCard);
       }
@@ -71,9 +71,9 @@ function bindShowMore(btn, carousel, localRecipe) {
   let curPtr = 0;
   btn.addEventListener('click', () => {
     //check the index of current recipes 
-    for (let i = 0; i < localRecipe.length / 3; i++) {
-      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * 3].title) {
-        curPtr = (i + 1) * 3;
+    for (let i = 0; i < localRecipe.length / 5; i++) {
+      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * 5].title) {
+        curPtr = (i + 1) * 5;
         break;
       }
     }
@@ -82,10 +82,10 @@ function bindShowMore(btn, carousel, localRecipe) {
       window.alert('no more recipe to show');
       return;
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       carousel.removeChild(carousel.querySelector('recipe-card'));
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       const recipe = document.createElement('recipe-card');
       recipe.data = localRecipe[i + curPtr];
       carousel.insertBefore(recipe, btn);
@@ -98,9 +98,9 @@ function bindShowLess(btn, carousel, localRecipe) {
   let curPtr = 0;
   btn.addEventListener('click', () => {
     //check the index of current recipes 
-    for (let i = 0; i < localRecipe.length / 3; i++) {
-      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * 3].title) {
-        curPtr = (i - 1) * 3;
+    for (let i = 0; i < localRecipe.length / 5; i++) {
+      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * 5].title) {
+        curPtr = (i - 1) * 5;
         break;
       }
     }
@@ -110,10 +110,10 @@ function bindShowLess(btn, carousel, localRecipe) {
       return;
     }
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       carousel.removeChild(carousel.querySelector('recipe-card'));
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       const recipe = document.createElement('recipe-card');
       recipe.data = localRecipe[i + curPtr];
       carousel.insertBefore(recipe, carousel.querySelector('.showMore'));

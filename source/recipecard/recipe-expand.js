@@ -11,20 +11,36 @@ class RecipeExpand extends HTMLElement {
         const article = document.createElement('article');
 
         style.innerHTML = `
-        body, main {
-            padding: 1mm;
-            padding-top: 0.5mm;
+        article {
+            background-color: white;
+            box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+            margin: 30px auto;
+            padding: 25px;
+            width: 80%;
+            border-radius: 25px
           }
+        .title-exp {
+            justify-self: center;
+            font-size: 5vh;
+            border-radius: 25px;
+        }
           /* the entire page (put a grid around it)  */
         .wrapper-exp {
             display: grid;
-            /* border-radius: 25px; */
+            padding: 1mm;
+            padding-top: 0.5mm;
+            border-radius: 25px;
+            background-color: #eee;
+        }
+        .fav-exp {
+            font-size:1.5vw;
+            align-items: center;
+            display: flex;
         }
         /* set padding and background color for each section in page */
         .wrapper-exp > section{
             background-color: #eee;
             padding: 1em;
-            /* border-radius: 25px; */
         }
         
         /* the image/description section */
@@ -33,13 +49,11 @@ class RecipeExpand extends HTMLElement {
             grid-template-columns: 1fr 1fr;
             column-gap: 1em;
             row-gap: 1em;
-            /* border-radius: 25px; */
         }
         /* the content inside the image/description section */
         .recipe-desc-exp > div{
             background-color: #ddd;
             padding: 1em;
-            border-radius: 25px;
         }
         
         /* the add to fav subsection */
@@ -51,8 +65,7 @@ class RecipeExpand extends HTMLElement {
         /* the description subsection */
         .descriptionBox{
             padding: 1em;
-            font-size: 2.5vw;
-            border-radius: 25px;
+            font-size: 1vw;
         }
         
         /* the main recipe img subsection */
@@ -60,7 +73,6 @@ class RecipeExpand extends HTMLElement {
             object-fit: cover;
             width: 100%;
             max-height: 100%;
-            border-radius: 25px;
         }
         
         /* the add to fav star img*/
@@ -76,12 +88,11 @@ class RecipeExpand extends HTMLElement {
         }
         
         /* the box containing the ingredient content(the checkbox stuff)*/
-        .ingredients-desc-exp > div:nth-child(2){
+        .ingredients-desc-exp{
             background-color: #ddd;
             padding: 1px;
-            text-align: center;
-            font-size: 2.5vw;
-            border-radius: 25px;
+            // text-align: center;
+            font-size: 1vw;
         }
         
         /* when checkbox is clicked, strikethrough the text */
@@ -90,67 +101,127 @@ class RecipeExpand extends HTMLElement {
         }
         
         /* the box containing the tutorial content*/
-        .tutorial-desc-exp > div:nth-child(2){
+        .tutorial-desc-exp {
             background-color: #ddd;
             padding: 1px;
-            font-size: 2.5vw;
-            border-radius: 25px;
+            font-size: 1vw;
             padding-left: 1em;
         }
         
         /* the box containing the nutional content*/
-        .nutrition-desc-exp > div:nth-child(2){
-            display: flex;
+        .nutrition-desc-exp {
             column-gap: 1em;
             background-color: #ddd;
             padding: 1px;
-            text-align:center;
-            font-size: 2.5vw;
+            // text-align:center;
+            font-size: 1vw;
             left: 10em;
             padding-left: 7.5em;
-            border-radius: 25px;
         }
       `
+        const wrapper = document.createElement('section');
+        wrapper.classList.add('wrapper-exp')
         const title = document.createElement('h1');
         title.classList.add('title-exp');
         title.innerText = cardData.title
+        
+        //#region
 
-        const desc = document.createElement('section');
-        desc.setAttribute('class', 'recipe-desc-exp');
-
-        const description = document.createElement('ul');
-        description.classList.add('descriptionBox', 'description');
-        const prepTime = document.createElement('li');
-        prepTime.innerText = `Prep time: ${cardData.readyInMinutes}`;
-        const dietary = document.createElement('li');
-        dietary.innerText = `Dietary restrictions: ${cardData.vagan == true ? 'vagan' : 'not vagan'}`
-
-        ingredients.innerText = ingredientsList
-        description.appendChild(prepTime);
-        description.appendChild(dietary);
-
+        const recipeDesc = document.createElement('section');
+        recipeDesc.classList.add('recipe-desc-exp');
 
         const mainImg = document.createElement('img');
         mainImg.src = cardData.image;
         mainImg.setAttribute('id', 'recipe-img');
-        mainImg.setAttribute('class', 'mainImg');
+        mainImg.classList.add('mainImg');
 
-        const ingredients = document.createElement('li');
-        var ingredientsList = '';
+        const description = document.createElement('ul');
+        description.classList.add('descriptionBox', 'description');
+        description.stlye = 'list-style:none'
+        const prepTime = document.createElement('li');
+        prepTime.innerText = `Prep time: ${cardData.readyInMinutes}`;
+        const dietary = document.createElement('li');
+        dietary.innerText = `Dietary restrictions: ${cardData.vagan == true ? 'vagan' : 'not vagan'}`
+        const rating = document.createElement('li');
+        rating.innerHTML = `Rating: <img src="./images/5-stars-red.jpeg" id="starRate">`
+        const allergens = document.createElement('li');
+        var allergensList = '';
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {
-            ingredientsList += cardData.extendedIngredients[i].name;
+            allergensList += cardData.extendedIngredients[i].name;
             if (i != cardData.extendedIngredients.length - 1) {
-                ingredientsList += ', '
+                allergensList += ', '
             }
-        }        
+        }
+        allergens.innerText = allergensList;   
+        description.appendChild(prepTime);
+        description.appendChild(dietary);
+        description.appendChild(rating);
+        description.appendChild(allergens);
+
+        const favIcon = document.createElement('img');
+        favIcon.src = './images/favoriteStar.png'
+        favIcon.style = 'float: left';
+        favIcon.id = 'star-img'
+        const favBut = document.createElement('p');
+        favBut.innerText = 'Add to Favorite'
+        const fav = document.createElement('div');
+        fav.classList.add('fav-exp')
+        fav.appendChild(favIcon);
+        fav.appendChild(favBut);
+
+        recipeDesc.appendChild(mainImg);
+        recipeDesc.appendChild(description)
+        recipeDesc.appendChild(fav);
+        //#endregion
+        //#region 
+        const ingredientDesc = document.createElement('section');
+        ingredientDesc.classList.add('ingredients-desc-exp')
+        const ingredTitle = document.createElement('div');
+        ingredTitle.innerHTML = `<h2> Ingredients <h2><p>U.S/metric</p>`;
+
+        const ingredientsTable = document.createElement('ingredients-table-exp');
+        for (let i = 0; i < cardData.extendedIngredients.length; i++) {
+            const ingredient = document.createElement('li');
+            ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i].originalString}</span>` 
+            ingredientsTable.appendChild(ingredient);
+        }
+
+        ingredientDesc.appendChild(ingredTitle);
+        ingredientDesc.appendChild(ingredientsTable);
+        //#endregion
+        //#region 
+        const tutorialDesc = document.createElement('section');
+        tutorialDesc.classList.add('tutorial-desc-exp');
+        const instructionTable = document.createElement('div');
+        instructionTable.innerHTML = cardData.instructions
+        tutorialDesc.appendChild(instructionTable);
+        //#endregion
+        //#region 
+        const nutrientDesc = document.createElement('section');
+        nutrientDesc.classList.add('nutrition-desc-exp');
+        const nutTitle = document.createElement('h2');
+        nutTitle.innerText = 'Nutritional Information';
+        const nutrientTable = document.createElement('ul');
+        for (let i = 0; i < cardData.nutrition.nutrients.length; i++) {
+            const nutrient = document.createElement('li');
+            const tmp = cardData.nutrition.nutrients[i];
+            nutrient.innerText = `${tmp.name}: ${tmp.amount} ${tmp.unit}`
+            nutrientTable.appendChild(nutrient);
+        }
+        nutrientDesc.appendChild(nutTitle);
+        nutrientDesc.appendChild(nutrientTable);
+        //#endregion
+        wrapper.appendChild(title);
+        wrapper.appendChild(recipeDesc);
+        wrapper.appendChild(ingredientDesc);
+        wrapper.appendChild(tutorialDesc)
+        wrapper.appendChild(nutrientDesc);
+   
         // const description = document.createElement('div');
         // description.setAttribute('class', 'descriptionBox description');
         // description.innerHTML = cardData.summary;
 
-        desc.appendChild(mainImg);
-        desc.appendChild(description)
-
-        article.appendChild(desc);
+        article.appendChild(wrapper);
         this.shadowRoot.append(style, article);
     }
 }

@@ -151,11 +151,11 @@ li a:hover {
   height: 40px;
   width: 120px;
 }
-
+/* 
 .section-recipes-expand {
   width: 85vh;
   align-items: center;
-}
+} */
 
 section.hide {
   display: none;

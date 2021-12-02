@@ -41,10 +41,10 @@ async function createCarousel(selector) {
       recipeCard.data = res.results[i];
       bindRecipeExpand(recipeCard, function () {
         fetchById(recipeCard.data.id).then(function (res) {
+          console.log(res);
           document.querySelector('.section-recipes-expand').classList.remove('hide');
           document.querySelector('.section-recipes-display').classList.add('hide');
           document.querySelector('recipe-expand').data = res;
-          console.log(document.querySelector('.section-recipes-display').classList)
         }
         )
       });

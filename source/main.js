@@ -18,10 +18,9 @@ window.addEventListener('DOMContentLoaded', init);
 const router = new Router();
 async function init() {
   document.querySelector('.section-recipes-expand').classList.add('hide');
-
-
   const breakfast = createCarousel('breakfast');
   const lunch = createCarousel('lunch');
+  bindEsc();
 }
 /* @function the function creates a carousel and attach the carousel to the main page
    @param input a filter word to select recipes for the carousel
@@ -125,5 +124,12 @@ function bindRecipeExpand(recipeCard, recipeExpand) {
   router.setExpand(recipeCard.data.id, recipeExpand)
   recipeCard.addEventListener('click', (e) => {
     router.navigate(recipeCard.data.id);
+  })
+}
+
+function bindEsc() {
+  document.addEventListener('keydown', (e) => {
+    if (e.key == 'Escape') {
+      router.navigate('home');}
   })
 }

@@ -76,6 +76,7 @@ class RecipeExpand extends HTMLElement {
             object-fit: cover;
             width: 100%;
             max-height: 100%;
+            border-radius: 25px;
         }
         
         /* the add to fav star img*/

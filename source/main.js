@@ -19,7 +19,7 @@ const router = new Router();
 async function init() {
   document.querySelector('.section-recipes-expand').classList.remove('shown');
   document.querySelector('.section-recipes-display').classList.add('shown');
-  
+
   const breakfast = createCarousel('breakfast');
   const lunch = createCarousel('lunch');
 }
@@ -29,7 +29,7 @@ async function init() {
 async function createCarousel(selector) {
   //used to store fetched recipe that stored in local base
   const localRecipe = [];
-  await fetchParams(`query=${selector}`).then(function(res) {
+  await fetchParams(`query=${selector}`).then(function (res) {
     const carousel = document.createElement('div');
     // set the div's carousel
     carousel.setAttribute('class', 'carousel');
@@ -39,14 +39,14 @@ async function createCarousel(selector) {
       // create recipe card
       const recipeCard = document.createElement('recipe-card');
       recipeCard.data = res.results[i];
-      bindRecipeExpand(recipeCard, function() {
-        fetchById(recipeCard.data.id).then(function(res) {
-            document.querySelector('.carousel').classList.remove('shown');
-            document.querySelector('.recipe-expand').classList.add('shown');
-            document.querySelector('.recipe-expand').data = res.json();
-          }
+      bindRecipeExpand(recipeCard, function () {
+        fetchById(recipeCard.data.id).then(function (res) {
+          document.querySelector('.section-recipes-expand').classList.add('shown');
+          document.querySelector('.section-recipes-display').classList.remove('shown');
+          document.querySelector('.recipe-expand').data = res.json();
+        }
         )
-        .catch(console.log(error))
+          .catch(console.log(error))
       });
       if (i < 3) {
         // show only three recipe in each carousel
@@ -71,9 +71,9 @@ function bindShowMore(btn, carousel, localRecipe) {
   let curPtr = 0;
   btn.addEventListener('click', () => {
     //check the index of current recipes 
-    for (let i = 0; i < localRecipe.length/3; i++) {
-      if (carousel.querySelector('recipe-card').data.title == localRecipe[i*3].title) {
-        curPtr = (i+1)*3;
+    for (let i = 0; i < localRecipe.length / 3; i++) {
+      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * 3].title) {
+        curPtr = (i + 1) * 3;
         break;
       }
     }
@@ -97,9 +97,9 @@ function bindShowLess(btn, carousel, localRecipe) {
   let curPtr = 0;
   btn.addEventListener('click', () => {
     //check the index of current recipes 
-    for (let i = 0; i < localRecipe.length/3; i++) {
-      if (carousel.querySelector('recipe-card').data.title == localRecipe[i*3].title) {
-        curPtr = (i-1)*3;
+    for (let i = 0; i < localRecipe.length / 3; i++) {
+      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * 3].title) {
+        curPtr = (i - 1) * 3;
         break;
       }
     }
@@ -108,7 +108,7 @@ function bindShowLess(btn, carousel, localRecipe) {
       window.alert('no more recipe to show');
       return;
     }
-    
+
     for (let i = 0; i < 3; i++) {
       carousel.removeChild(carousel.querySelector('recipe-card'));
     }

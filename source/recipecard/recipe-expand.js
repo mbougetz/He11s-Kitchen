@@ -37,6 +37,9 @@ class RecipeExpand extends HTMLElement {
             align-items: center;
             display: flex;
         }
+        .list-element {
+            padding: 0.5em;
+        }
         /* set padding and background color for each section in page */
         .wrapper-exp > section{
             background-color: #eee;
@@ -139,24 +142,33 @@ class RecipeExpand extends HTMLElement {
         description.classList.add('descriptionBox', 'description');
         description.stlye = 'list-style:none'
         const prepTime = document.createElement('li');
+        prepTime.classList.add('list-element');
         prepTime.innerText = `Prep time: ${cardData.readyInMinutes}`;
         const dietary = document.createElement('li');
         dietary.innerText = `Dietary restrictions: ${cardData.vagan == true ? 'vagan' : 'not vagan'}`
+        dietary.classList.add('list-element');
         const rating = document.createElement('li');
+        rating.classList.add('list-element');
         rating.innerHTML = `Rating: <img src="./images/5-stars-red.jpeg" id="starRate">`
         const allergens = document.createElement('li');
-        var allergensList = '';
+        var allergensList = 'Allergens: ';
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {
             allergensList += cardData.extendedIngredients[i].name;
             if (i != cardData.extendedIngredients.length - 1) {
                 allergensList += ', '
             }
         }
-        allergens.innerText = allergensList;   
+        allergens.innerText = allergensList;  
+        allergens.classList.add('list-element'); 
+        const summary = document.createElement('li');
+        summary.innerHTML = 'Summary: ' + cardData.summary
+        summary.classList.add('list-element');
+
         description.appendChild(prepTime);
         description.appendChild(dietary);
         description.appendChild(rating);
         description.appendChild(allergens);
+        description.appendChild(summary);
 
         const favIcon = document.createElement('img');
         favIcon.src = './images/favoriteStar.png'

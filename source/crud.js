@@ -29,11 +29,27 @@ function redirectToCRUD() {
   window.location.href = "crud.html";
 }
 
+//Change page source to editRecipe.html
+function redirectToEdit(){
+  window.location.href = "editRecipe.html";
+}
+
 //Runs once crud.html has been loaded
 function crudPageInit() {
   document.getElementById("add").addEventListener("click", function () {
     addRecipe();
   });
+}
+
+//Runs once editRecipe.html has been loaded
+function editPageInit() {
+  // add event listener
+  // getRecipe(i) ==> how to know what i is?
+}
+
+//Runs once editRecipe.html has been loaded
+function editPageInit(){
+  // use the edit recipe button as the element
 }
 
 //Take user input and create a recipe and add it to localstorage
@@ -82,6 +98,25 @@ function redirectToIndex() {
   window.location.href = "index.html";
 }
 
+function getRecipe(i){
+  // get recipe info from local storage
+  let recipeTitle = JSON.parse(localStorage[i].getItem('localRecipes'[0]));
+  let recipeAuthor = JSON.parse(localStorage[i].getItem('localRecipes'[1]));
+  let recipeTag = JSON.parse(localStorage[i].getItem('localRecipes'[2]));
+  let recipeTime = JSON.parse(localStorage[i].getItem('localRecipes'[3]));
+  let recipeImage = JSON.parse(localStorage[i].getItem('localRecipes'[4]));
+  let recipeIngredients = JSON.parse(localStorage[i].getItem('localRecipes'[5]));
+  let recipeDirections = JSON.parse(localStorage[i].getItem('localRecipes'[6]));
+
+  //Load the text inputs with recipe info
+  document.getElementById('editUploadFile').value = recipeImage;
+  document.getElementById('editName').value = recipeAuthor;
+  document.getElementById('editRecipeTitle').value = recipeTitle;
+  document.getElementById('editIngredients').value = recipeIngredients;
+  document.getElementById('editTime').value = recipeTime;
+  document.getElementById('editTag').value = recipeTag;
+  document.getElementById('editInstructions').value = recipeDirections;
+}
 /** 
 function cancelRecipe() {}
 

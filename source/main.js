@@ -1,11 +1,12 @@
+import { Router } from "./Router.js";
 import { fetchParams, fetchById } from "./service/api.js";
 const recipes = []; // instead of using json files, we want recipes from the API
 const recipeData = {}; // used to access the recipe data from Spoonacular
 
-//router
-const router = {};
-
 window.addEventListener("DOMContentLoaded", init);
+
+//router
+const router = new Router();
 
 async function init() {
   console.log("initiating");
@@ -36,8 +37,12 @@ async function init() {
   //Bind subpage functionality to dropdown menu
   bindSearchBars();
 
+  //binds expand pages to recipe cards
+  //bindRecipeCards();
   //Display homepage by default
   homeCarousels(6);
+
+  bindEsc();
 }
 
 //If no recipes have been stored, creates an array to store them in
@@ -258,6 +263,7 @@ function loadLocalRecipes() {
   for (let i = 0; i < stringifiedRecipies.length; i++) {
     let newCard = document.createElement("recipe-card");
     newCard.data = stringifiedRecipies[i].data;
+    //recipe expand page to each recipe card
     newCardsArray[i] = newCard;
   }
 
@@ -294,7 +300,6 @@ function loadLocalRecipes() {
 
   carouselNum++;
 }
-
 //The specific carousels to load on the breakfast page
 async function breakfastCarousels(numResults) {
   clearCarousels();

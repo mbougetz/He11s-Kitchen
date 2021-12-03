@@ -7,7 +7,6 @@ class Card extends HTMLElement {
   set data(cardData) {
     if (!cardData) return; //Exit function if data DNE
 
-
     //Accesses appropriate data element if recipe is local
     //if(cardData.data)cardData = cardData.data;
 
@@ -157,17 +156,15 @@ class Card extends HTMLElement {
 
     //TODO: Change picture based on # of stars
 
-
     //Recipe ingredients
     var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
     for (let i = 0; i < cardData.extendedIngredients.length; i++) {
-      if(cardData.extendedIngredients[i].originalString) ingredientsList += cardData.extendedIngredients[i].originalString;
+      if (cardData.extendedIngredients[i].originalString)
+        ingredientsList += cardData.extendedIngredients[i].originalString;
       else ingredientsList += cardData.extendedIngredients[i];
 
       if (i != cardData.extendedIngredients.length - 1) ingredientsList += ", ";
     }
-
-
 
     const ingredients = document.createElement("p");
     ingredients.classList.add("ingredients");

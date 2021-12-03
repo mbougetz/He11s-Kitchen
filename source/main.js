@@ -9,7 +9,7 @@ window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   console.log("initiating");
-  
+
   /*
   try {
     await fetchRecipes();
@@ -41,35 +41,33 @@ async function init() {
 }
 
 //If no recipes have been stored, creates an array to store them in
-function initLocalStorage(){
-  if(!localStorage.getItem('localRecipes')){
+function initLocalStorage() {
+  if (!localStorage.getItem("localRecipes")) {
     let emptyArr = [];
-    localStorage.setItem('localRecipes', JSON.stringify(emptyArr));
+    localStorage.setItem("localRecipes", JSON.stringify(emptyArr));
   }
-
-
 }
 
 function bindSubPages() {
   document.getElementById("homePage").addEventListener("click", function () {
     homeCarousels(6);
 
-  //remove any subpage hero sections
-  if (document.querySelector(".breakfast-hero")){
-    document.querySelector(".breakfast-hero").classList.remove("seen");
-  }
-  if (document.querySelector(".lunch-hero")){
-    document.querySelector(".lunch-hero").classList.remove("seen");
-  }
-  if (document.querySelector(".dinner-hero")){
-    document.querySelector(".dinner-hero").classList.remove("seen");
-  }
-  if (document.querySelector(".dessert-hero")){
-    document.querySelector(".dessert-hero").classList.remove("seen");
-  }
+    //remove any subpage hero sections
+    if (document.querySelector(".breakfast-hero")) {
+      document.querySelector(".breakfast-hero").classList.remove("seen");
+    }
+    if (document.querySelector(".lunch-hero")) {
+      document.querySelector(".lunch-hero").classList.remove("seen");
+    }
+    if (document.querySelector(".dinner-hero")) {
+      document.querySelector(".dinner-hero").classList.remove("seen");
+    }
+    if (document.querySelector(".dessert-hero")) {
+      document.querySelector(".dessert-hero").classList.remove("seen");
+    }
 
-  //add the home page sections
-  document.querySelector(".hero").classList.add("seen");
+    //add the home page sections
+    document.querySelector(".hero").classList.add("seen");
     document.querySelector(".featured").classList.add("seen");
   });
 
@@ -83,15 +81,15 @@ function bindSubPages() {
       document.querySelector(".featured").classList.remove("seen");
 
       //remove lunch sections if redirecting from lunch page
-      if (document.querySelector(".lunch-hero")){
+      if (document.querySelector(".lunch-hero")) {
         document.querySelector(".lunch-hero").classList.remove("seen");
       }
       //remove dinner sections if redirecting from dinner page
-      if (document.querySelector(".dinner-hero")){
+      if (document.querySelector(".dinner-hero")) {
         document.querySelector(".dinner-hero").classList.remove("seen");
       }
       //remove dessert section if redirecting from dessert page
-      if (document.querySelector(".dessert-hero")){
+      if (document.querySelector(".dessert-hero")) {
         document.querySelector(".dessert-hero").classList.remove("seen");
       }
 
@@ -107,15 +105,15 @@ function bindSubPages() {
     document.querySelector(".featured").classList.remove("seen");
 
     //remove breakfast sections if redirecting from lunch page
-    if (document.querySelector(".breakfast-hero")){
+    if (document.querySelector(".breakfast-hero")) {
       document.querySelector(".breakfast-hero").classList.remove("seen");
     }
     //remove dinner sections if redirecting from dinner page
-    if (document.querySelector(".dinner-hero")){
+    if (document.querySelector(".dinner-hero")) {
       document.querySelector(".dinner-hero").classList.remove("seen");
     }
     //remove dessert section if redirecting from dessert page
-    if (document.querySelector(".dessert-hero")){
+    if (document.querySelector(".dessert-hero")) {
       document.querySelector(".dessert-hero").classList.remove("seen");
     }
     //add lunch section
@@ -128,15 +126,15 @@ function bindSubPages() {
     document.querySelector(".hero").classList.remove("seen");
     document.querySelector(".featured").classList.remove("seen");
     //remove breakfast sections if redirecting from lunch page
-    if (document.querySelector(".breakfast-hero")){
+    if (document.querySelector(".breakfast-hero")) {
       document.querySelector(".breakfast-hero").classList.remove("seen");
     }
     //remove lunch sections if redirecting from dinner page
-    if (document.querySelector(".lunch-hero")){
+    if (document.querySelector(".lunch-hero")) {
       document.querySelector(".lunch-hero").classList.remove("seen");
     }
     //remove dessert section if redirecting from dessert page
-    if (document.querySelector(".dessert-hero")){
+    if (document.querySelector(".dessert-hero")) {
       document.querySelector(".dessert-hero").classList.remove("seen");
     }
     //add dinner section
@@ -149,18 +147,18 @@ function bindSubPages() {
     document.querySelector(".hero").classList.remove("seen");
     document.querySelector(".featured").classList.remove("seen");
     //remove breakfast sections if redirecting from lunch page
-    if (document.querySelector(".breakfast-hero")){
+    if (document.querySelector(".breakfast-hero")) {
       document.querySelector(".breakfast-hero").classList.remove("seen");
     }
     //remove lunch section if redirecting from lunch page
-    if (document.querySelector(".lunch-hero")){
+    if (document.querySelector(".lunch-hero")) {
       document.querySelector(".lunch-hero").classList.remove("seen");
     }
     //remove dinner sections if redirecting from dinner page
-    if (document.querySelector(".dinner-hero")){
+    if (document.querySelector(".dinner-hero")) {
       document.querySelector(".dinner-hero").classList.remove("seen");
     }
-    
+
     //add dessert section
     document.querySelector(".dessert-hero").classList.add("seen");
   });
@@ -225,40 +223,40 @@ function clearCarousels() {
 async function homeCarousels(numResults) {
   clearCarousels();
 
-
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
-  let localRecipes = JSON.parse(localStorage.getItem('localRecipes'));
-  if (localRecipes && localRecipes.length != 0)loadLocalRecipes();
+  let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
+  if (localRecipes && localRecipes.length != 0) loadLocalRecipes();
   else await addCarouselsToPage("pasta", numResults, "Top Results for Pasta");
-  
-  await addCarouselsToPage("burger", numResults, "Top Burger Recipes"); 
-  await addCarouselsToPage("thanksgiving", numResults, "Top Thanksgiving Recipes");
+
+  await addCarouselsToPage("burger", numResults, "Top Burger Recipes");
+  await addCarouselsToPage(
+    "thanksgiving",
+    numResults,
+    "Top Thanksgiving Recipes"
+  );
 }
 
 //Loads the locally stored recipes and adds to carousel and then appends carousel to page
-function loadLocalRecipes(){
+function loadLocalRecipes() {
   //Retrieve the array of local recipes from localstorage
-  let localRecipes = JSON.parse(localStorage.getItem('localRecipes'));
+  let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
 
   let stringifiedRecipies = [];
 
-
-  //Parse each stored recipe from json format back into js-useable data 
+  //Parse each stored recipe from json format back into js-useable data
   //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
-  for(let i = 0; i < localRecipes.length; i++){
-   //stringifiedRecipies[i] = JSON.parse(localRecipes[i]).json;
+  for (let i = 0; i < localRecipes.length; i++) {
+    //stringifiedRecipies[i] = JSON.parse(localRecipes[i]).json;
     stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
-
   }
 
-
   //Create an empty carousel
-  let newCarousel = document.createElement('card-carousel');
-  
+  let newCarousel = document.createElement("card-carousel");
+
   //Create an array of all recipe data
   let newCardsArray = [];
-  for(let i = 0; i < stringifiedRecipies.length; i++){
-    let newCard = document.createElement('recipe-card');
+  for (let i = 0; i < stringifiedRecipies.length; i++) {
+    let newCard = document.createElement("recipe-card");
     newCard.data = stringifiedRecipies[i].data;
     newCardsArray[i] = newCard;
   }
@@ -269,25 +267,32 @@ function loadLocalRecipes(){
   //Create banner message for new carousel
   let cardTitle = document.createElement("h2");
   cardTitle.innerText = "Locally Created Recipes";
-  cardTitle.setAttribute('id', 'carousel-title');
-  cardTitle.innerHTML = cardTitle.innerText + '<i class="fa fa-long-arrow-right"><\/i>';
-  document.querySelectorAll('.recipes-wrapper')[carouselNum].appendChild(cardTitle);
-
+  cardTitle.setAttribute("id", "carousel-title");
+  cardTitle.innerHTML =
+    cardTitle.innerText + '<i class="fa fa-long-arrow-right"></i>';
+  document
+    .querySelectorAll(".recipes-wrapper")
+    [carouselNum].appendChild(cardTitle);
 
   //Appends the newly created and populated carousel to the class recipes-wrapper in the document
-  document.querySelectorAll('.recipes-wrapper')[carouselNum].appendChild(newCarousel);
+  document
+    .querySelectorAll(".recipes-wrapper")
+    [carouselNum].appendChild(newCarousel);
 
   //Bind the back and forwards buttons to the carousel
-  document.querySelectorAll('.back')[carouselNum].addEventListener('click', () => {
-    newCarousel.prevCards();
-  });
+  document
+    .querySelectorAll(".back")
+    [carouselNum].addEventListener("click", () => {
+      newCarousel.prevCards();
+    });
 
-  document.querySelectorAll('.forward')[carouselNum].addEventListener('click', () => {
-    newCarousel.nextCards();
-  });
+  document
+    .querySelectorAll(".forward")
+    [carouselNum].addEventListener("click", () => {
+      newCarousel.nextCards();
+    });
 
   carouselNum++;
-
 }
 
 //The specific carousels to load on the breakfast page

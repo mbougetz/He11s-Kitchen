@@ -606,8 +606,6 @@ button.showMore {
   padding: 3px;
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
-  width: 3vh;
-  height: 3vh;
   background-color: white;
 }
 
@@ -618,8 +616,6 @@ button.showLess {
   padding: 3px;
   transform: rotate(135deg);
   -webkit-transform: rotate(135deg);
-  width: 3vh;
-  height: 3vh;
   background-color: white;
 }
 

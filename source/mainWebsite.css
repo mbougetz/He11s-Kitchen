@@ -60,6 +60,36 @@ nav a {
   text-decoration: none;
 }
 
+button.showMore {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  width: 3vh;
+  height: 3vh;
+  background-color: white;
+}
+
+button.showLess {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  width: 3vh;
+  height: 3vh;
+  background-color: white;
+}
+
+.carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 li a:hover {
   background-color: #615f5f;
 }
@@ -78,10 +108,6 @@ li a:hover {
   background-repeat: no repeat;
   background-position: center center;
   background-attachment: fixed;
-}
-
-.card-carousel {
-  display: inline-block; 
 }
 
 .hero h1 {
@@ -125,5 +151,12 @@ li a:hover {
   height: 40px;
   width: 120px;
 }
+/* 
+.section-recipes-expand {
+  width: 85vh;
+  align-items: center;
+} */
 
-
+section.hide {
+  display: none;
+}

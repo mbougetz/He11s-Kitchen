@@ -160,11 +160,11 @@ class Card extends HTMLElement {
 
     //Recipe ingredients
     var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
-    for (let i = 0; i < cardData.extendedIngredients.length; i++) {
-      if(cardData.extendedIngredients[i].originalString) ingredientsList += cardData.extendedIngredients[i].originalString;
-      else ingredientsList += cardData.extendedIngredients[i];
+    for (let i = 0; i < cardData.nutrition.ingredients.length; i++) {
+      if(cardData.nutrition.ingredients[i].originalString) ingredientsList += cardData.ingredients[i].originalString;
+      else ingredientsList += cardData.nutrition.ingredients[i];
 
-      if (i != cardData.extendedIngredients.length - 1) ingredientsList += ", ";
+      if (i != cardData.nutrition.ingredients.length - 1) ingredientsList += ", ";
     }
 
 

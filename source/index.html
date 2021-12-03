@@ -14,11 +14,11 @@
     <link rel="stylesheet" href="mainWebsite.css">
     <link rel="stylesheet" href="featured.css">
     <script src="https://use.fontawesome.com/71ef81c39b.js"></script>
+    <script src="recipecard/card-expand.js" type="module"></script>
     <!-- each js file has a style element that will be used here when the expanded page is rendered-->
     <script src="recipecard/card.js" type="module"></script>
     <!-- <script src="recipe card/cardCarousel.js" type="module"></script>-->
     <script src="recipecard/cardCarousel.js" type="module"></script>
-    <script src="recipecard/cardExpand.js" type="module"></script>
   <!--  <script src="breakfastExpand.js" type="module"></script>
     <script src="lunchExpand.js" type="module"></script>
     <script src="dinnerExpand.js" type="module"></script>
@@ -198,10 +198,10 @@
             </h2>-->
             
             <div class="recipes-wrapper">
-                <a class="back">&#10094</a>
-                <a class="forward">&#10095</a>
+                <!-- <a class="back">&#10094</a>
+                <a class="forward">&#10095</a> -->
             </div>
-
+<!-- 
             <div class="recipes-wrapper">
                 <a class="back">&#10094</a>
                 <a class="forward">&#10095</a>
@@ -210,7 +210,10 @@
             <div class="recipes-wrapper">
                 <a class="back">&#10094</a>
                 <a class="forward">&#10095</a>
-            </div>
+            </div> -->
+        </section>
+        <section class='section-recipes-expand'>
+            <recipe-expand></recipe-expand>
         </section>
 
       <!--  <section class="recipes-breakfast-expand-page">

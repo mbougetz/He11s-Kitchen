@@ -47,10 +47,6 @@ function editPageInit() {
   // getRecipe(i) ==> how to know what i is?
 }
 
-//Runs once editRecipe.html has been loaded
-function editPageInit(){
-  // use the edit recipe button as the element
-}
 
 //Take user input and create a recipe and add it to localstorage
 function addRecipe() {
@@ -98,15 +94,15 @@ function redirectToIndex() {
   window.location.href = "index.html";
 }
 
-function getRecipe(i){
+function getRecipe(){
   // get recipe info from local storage
-  let recipeTitle = JSON.parse(localStorage[i].getItem('localRecipes'[0]));
-  let recipeAuthor = JSON.parse(localStorage[i].getItem('localRecipes'[1]));
-  let recipeTag = JSON.parse(localStorage[i].getItem('localRecipes'[2]));
-  let recipeTime = JSON.parse(localStorage[i].getItem('localRecipes'[3]));
-  let recipeImage = JSON.parse(localStorage[i].getItem('localRecipes'[4]));
-  let recipeIngredients = JSON.parse(localStorage[i].getItem('localRecipes'[5]));
-  let recipeDirections = JSON.parse(localStorage[i].getItem('localRecipes'[6]));
+  let recipeTitle = JSON.parse(localStorage.getItem('localRecipes'[0]));
+  let recipeAuthor = JSON.parse(localStorage.getItem('localRecipes'[1]));
+  let recipeTag = JSON.parse(localStorage.getItem('localRecipes'[2]));
+  let recipeTime = JSON.parse(localStorage.getItem('localRecipes'[3]));
+  let recipeImage = JSON.parse(localStorage.getItem('localRecipes'[4]));
+  let recipeIngredients = JSON.parse(localStorage.getItem('localRecipes'[5]));
+  let recipeDirections = JSON.parse(localStorage.getItem('localRecipes'[6]));
 
   //Load the text inputs with recipe info
   document.getElementById('editUploadFile').value = recipeImage;

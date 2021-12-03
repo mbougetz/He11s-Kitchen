@@ -594,3 +594,33 @@ footer {
   transition: all 0.2s ease-out;
   cursor: pointer;
 }
+
+section.hide {
+  display: none;
+}
+
+button.showMore {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  background-color: white;
+}
+
+button.showLess {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  background-color: white;
+}
+
+.carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

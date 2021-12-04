@@ -1,9 +1,10 @@
 import { fetchParams, fetchById } from "./service/api.js";
+import { Router } from "./Router.js";
 const recipes = []; // instead of using json files, we want recipes from the API
 const recipeData = {}; // used to access the recipe data from Spoonacular
 
 //router
-const router = {};
+const router = new Router();
 
 window.addEventListener("DOMContentLoaded", init);
 
@@ -164,6 +165,21 @@ function bindSubPages() {
   });
 }
 
+function bindRecipeExpand(recipeCard, recipeExpand) {
+  router.setExpand(recipeCard.data.id, recipeExpand);
+  recipeCard.addEventListener("click", (e) => {
+    router.navigate(recipeCard.data.id);
+  });
+}
+
+function bindEsc() {
+  document.addEventListener("keydown", (e) => {
+    if (e.key == "Escape") {
+      router.navigate("home");
+    }
+  });
+}
+
 //Enable search functionality
 function bindSearchBars() {
   document
@@ -259,6 +275,15 @@ function loadLocalRecipes() {
     let newCard = document.createElement("recipe-card");
     newCard.data = stringifiedRecipies[i].data;
     newCardsArray[i] = newCard;
+    bindRecipeExpand(newCard, function () {
+      fetchById(newCard.data.id).then(function (res) {
+        document.querySelector(".section-recipes-expand").classList.add("seen");
+        document
+          .querySelector(".section-recipes-display")
+          .classList.remove("seen");
+        document.querySelector("recipe-expand").data = res;
+      });
+    });
   }
 
   //Add all recipe cards to the carousel

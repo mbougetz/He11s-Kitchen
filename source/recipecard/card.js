@@ -153,16 +153,16 @@ class Card extends HTMLElement {
 
     //TODO: Change picture based on # of stars
 
-    //Recipe ingredients
-    var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
-    for (let i = 0; i < cardData.extendedIngredients.length; i++) {
-      ingredientsList += cardData.extendedIngredients[i].originalString;
-      if (i != cardData.extendedIngredients.length - 1) ingredientsList += ", ";
-    }
+    // //Recipe ingredients
+    // var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
+    // for (let i = 0; i < cardData.extendedIngredients.length; i++) {
+    //   ingredientsList += cardData.extendedIngredients[i].originalString;
+    //   if (i != cardData.extendedIngredients.length - 1) ingredientsList += ", ";
+    // }
 
-    const ingredients = document.createElement("p");
-    ingredients.classList.add("ingredients");
-    ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
+    // const ingredients = document.createElement("p");
+    // ingredients.classList.add("ingredients");
+    // ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
 
     //TODO: Add recipe tag to card
 
@@ -171,7 +171,7 @@ class Card extends HTMLElement {
     cardArticle.appendChild(title);
     cardArticle.appendChild(rating);
     //cardArticle.appendChild(time);
-    cardArticle.appendChild(ingredients);
+    // cardArticle.appendChild(ingredients);
 
     this.shadowRoot.append(cardStyle, cardArticle);
   }

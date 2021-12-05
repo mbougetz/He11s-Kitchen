@@ -595,10 +595,6 @@ footer {
   cursor: pointer;
 }
 
-section.hide {
-  display: none;
-}
-
 button.showMore {
   border: solid black;
   border-width: 0 3px 3px 0;

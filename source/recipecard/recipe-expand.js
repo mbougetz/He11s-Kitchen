@@ -221,24 +221,31 @@ class RecipeExpand extends HTMLElement {
         tutorialDesc.appendChild(instructionTable);
         //#endregion
         //#region 
+
+        //Testing- don't load if data dne
         const nutrientDesc = document.createElement('section');
-        nutrientDesc.classList.add('nutrition-desc-exp');
-        const nutTitle = document.createElement('h2');
-        nutTitle.innerText = 'Nutritional Information';
-        const nutrientTable = document.createElement('ul');
-        for (let i = 0; i < cardData.nutrition.nutrients.length; i++) {
-            const nutrient = document.createElement('li');
-            const tmp = cardData.nutrition.nutrients[i];
-            nutrient.innerText = `${tmp.name}: ${tmp.amount} ${tmp.unit}`
-            nutrientTable.appendChild(nutrient);
-        }
-        nutrientDesc.appendChild(nutTitle);
-        nutrientDesc.appendChild(nutrientTable);
+        //if(cardData.nutrition && cardData.nutrition.nutrients){
+          
+          nutrientDesc.classList.add('nutrition-desc-exp');
+          const nutTitle = document.createElement('h2');
+          nutTitle.innerText = 'Nutritional Information';
+          const nutrientTable = document.createElement('ul');
+          for (let i = 0; i < cardData.nutrition.nutrients.length; i++) {
+              const nutrient = document.createElement('li');
+              const tmp = cardData.nutrition.nutrients[i];
+              nutrient.innerText = `${tmp.name}: ${tmp.amount} ${tmp.unit}`
+              nutrientTable.appendChild(nutrient);
+          }
+          nutrientDesc.appendChild(nutTitle);
+          nutrientDesc.appendChild(nutrientTable);
+        //}
+
         //#endregion
         wrapper.appendChild(title);
         wrapper.appendChild(recipeDesc);
         wrapper.appendChild(ingredientDesc);
         wrapper.appendChild(tutorialDesc)
+        //if(cardData.nutrition && cardData.nutrition.nutrients) wrapper.appendChild(nutrientDesc);
         wrapper.appendChild(nutrientDesc);
    
         // const description = document.createElement('div');

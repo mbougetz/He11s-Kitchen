@@ -15,9 +15,11 @@ const router = new Router(
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
+  document.querySelector('.section-recipes-expand').classList.add('hide');
   console.log("initiating");
 
-  createCarousel('burger');
+
+ 
   //Initialize localStorage for use
   initLocalStorage();
 
@@ -29,8 +31,10 @@ async function init() {
 
   //Display homepage by default
   homeCarousels(6);
+
   bindEsc();
   router.onPopstate();
+
 }
 
 //If no recipes have been stored, creates an array to store them in
@@ -218,15 +222,23 @@ async function homeCarousels(numResults) {
 
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-  if (localRecipes && localRecipes.length != 0) loadLocalRecipes();
-  else await addCarouselsToPage("pasta", numResults, "Top Results for Pasta");
+  //if (localRecipes && localRecipes.length != 0) newLoadLocalRecipes();
+  //else await createCarousel("sandwich", numResults);
 
-  await addCarouselsToPage("burger", numResults, "Top Burger Recipes");
+
+  //else await addCarouselsToPage("pasta", numResults, "Top Results for Pasta");
+
+  await createCarousel("burger", numResults);
+  await createCarousel("pasta", numResults);
+
+  /*await addCarouselsToPage("burger", numResults, "Top Burger Recipes");
   await addCarouselsToPage(
     "thanksgiving",
     numResults,
     "Top Thanksgiving Recipes"
-  );
+  );*/
+
+
 }
 
 //Loads the locally stored recipes and adds to carousel and then appends carousel to page
@@ -543,13 +555,23 @@ async function fetchRecipes() {
   });
 }*/
 
+
+const router = new Router(
+  function () {
+    document.querySelector('.section-recipes-expand').classList.add('hide');
+    document.querySelector('.section-recipes-display').classList.remove('hide');
+  }
+);
+
 /* @function the function creates a carousel and attach the carousel to the main page
    @param input a filter word to select recipes for the carousel
    @return return an array of recipes that contained in the carousel*/
-async function createCarousel(selector) {
+async function createCarousel(selector, numRecipes) {
+  if(!numRecipes) numRecipes = 12;
+
   //used to store fetched recipe that stored in local base
   const localRecipe = [];
-  await fetchParams(`query=${selector}&addRecipeNutrition=true&number=24`).then(function (res) {
+  await fetchParams(`query=${selector}&addRecipeNutrition=true&number=${numRecipes}`).then(function (res) {
     const carousel = document.createElement('div');
     // set the div's carousel
     carousel.setAttribute('class', 'carousel');
@@ -561,31 +583,150 @@ async function createCarousel(selector) {
       recipeCard.data = res.results[i];
       bindRecipeExpand(recipeCard, function () {
         fetchById(recipeCard.data.id).then(function (res) {
-          document.querySelector('.section-recipes-expand').classList.add('seen');
-          document.querySelector('.section-recipes-display').classList.remove('seen');
-          document.querySelector('.featured').classList.remove('seen');
+          document.querySelector('.section-recipes-expand').classList.remove('hide');
+          document.querySelector('.section-recipes-display').classList.add('hide');
           document.querySelector('recipe-expand').data = res;
         }
         )
       });
-      if (i < 5) {
+      //Test
+      if (i < 3) {
         // show only three recipe in each carousel
         carousel.appendChild(recipeCard);
       }
     }
+
+    /*<a class="back">&#10094</a>
+                <a class="forward">&#10095</a>*/
+                
+
+    let backButton = document.createElement('a');
+    backButton.setAttribute('class', "back");
+    backButton.innerHTML="&#10094";
+    bindShowLess(backButton, carousel, localRecipe);
+    carousel.prepend(backButton);
+
+    let forwardButton = document.createElement('a');
+    forwardButton.setAttribute('class', "forward");
+    forwardButton.innerHTML="&#10095";
+    bindShowMore(forwardButton, carousel, localRecipe);
+    carousel.appendChild(forwardButton);
+                
     // append showMore button to the carousel.
-    const showMore = document.createElement('button');
+    /*const showMore = document.createElement('button');
     showMore.setAttribute('class', 'showMore');
     carousel.appendChild(showMore);
     const showLess = document.createElement('button');
     bindShowMore(showMore, carousel, localRecipe);
     showLess.setAttribute('class', 'showLess');
     carousel.prepend(showLess);
-    bindShowLess(showLess, carousel, localRecipe);
+    bindShowLess(showLess, carousel, localRecipe);*/
     document.querySelector('.recipes-wrapper').appendChild(carousel);
   })
   return localRecipe;
 }
+
+
+
+function newLoadLocalRecipes() {
+  //Retrieve the array of local recipes from localstorage
+  let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
+
+  let stringifiedRecipies = [];
+
+  //Parse each stored recipe from json format back into js-useable data
+  //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
+  for (let i = 0; i < localRecipes.length; i++) {
+    //stringifiedRecipies[i] = JSON.parse(localRecipes[i]).json;
+    stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
+  }
+
+  //Create an empty carousel
+  let newCarousel = document.createElement("card-carousel");
+
+  const carousel = document.createElement('div');
+    // set the div's carousel
+  carousel.setAttribute('class', 'carousel');
+
+  //Create an array of all recipe data
+  let newCardsArray = [];
+  for (let i = 0; i < stringifiedRecipies.length; i++) {
+    let newCard = document.createElement("recipe-card");
+    newCard.data = stringifiedRecipies[i].data;
+    newCardsArray[i] = newCard;
+
+    //newsection
+    document.querySelector('.section-recipes-expand').classList.remove('hide');
+    document.querySelector('.section-recipes-display').classList.add('hide');
+    document.querySelector('recipe-expand').data = newCard.data; //probably gonna break
+
+    carousel.appendChild(newCard);
+
+    /*
+    bindRecipeExpand(newCard, function () {
+      fetchById(newCard.data.id).then(function (res) {
+        document.querySelector('.section-recipes-expand').classList.remove('hide');
+        document.querySelector('.section-recipes-display').classList.add('hide');
+        document.querySelector('recipe-expand').data = res;
+      }
+      )
+    });*/
+    //end newsection
+
+  }
+
+  //Add all recipe cards to the carousel
+  newCarousel.createCardCarousel(newCardsArray);
+
+  //Create banner message for new carousel
+  let cardTitle = document.createElement("h2");
+  cardTitle.innerText = "Locally Created Recipes";
+  cardTitle.setAttribute("id", "carousel-title");
+  cardTitle.innerHTML =
+    cardTitle.innerText + '<i class="fa fa-long-arrow-right"></i>';
+  document
+    .querySelectorAll(".recipes-wrapper")
+    [carouselNum].appendChild(cardTitle);
+
+  /*
+  //Appends the newly created and populated carousel to the class recipes-wrapper in the document
+  document
+    .querySelectorAll(".recipes-wrapper")
+    [carouselNum].appendChild(newCarousel);
+
+  //Bind the back and forwards buttons to the carousel
+  document
+    .querySelectorAll(".back")
+    [carouselNum].addEventListener("click", () => {
+      newCarousel.prevCards();
+    });
+
+  document
+    .querySelectorAll(".forward")
+    [carouselNum].addEventListener("click", () => {
+      newCarousel.nextCards();
+    });
+
+  carouselNum++;*/
+
+
+  // append showMore button to the carousel.
+  const showMore = document.createElement('button');
+  showMore.setAttribute('class', 'showMore');
+  carousel.appendChild(showMore);
+  const showLess = document.createElement('button');
+  bindShowMore(showMore, carousel, newCardsArray);
+  showLess.setAttribute('class', 'showLess');
+  carousel.prepend(showLess);
+  bindShowLess(showLess, carousel, newCardsArray);
+  document.querySelector('.recipes-wrapper').appendChild(carousel);
+}
+
+
+
+
+
+
 /* the function add an eventlistener to the showMore button in the carousel. By clicking the button, 3 more recipe will be shown. */
 function bindShowMore(btn, carousel, localRecipe) {
   let curPtr = 0;

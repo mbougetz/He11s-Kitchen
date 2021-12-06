@@ -26,6 +26,7 @@ export class Router {
     }
     this[page]();
   }
+  
   onPopstate() {
     window.addEventListener('popstate', (e) => {
       this.navigate(e.state.page, true)

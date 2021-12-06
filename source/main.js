@@ -6,6 +6,7 @@ const recipeData = {}; // used to access the recipe data from Spoonacular
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
+  document.querySelector('.section-recipes-expand').classList.add('hide');
   console.log("initiating");
 
   /*
@@ -36,7 +37,6 @@ async function init() {
 
   //Display homepage by default
   homeCarousels(6);
-  bindEsc();
 }
 
 //If no recipes have been stored, creates an array to store them in
@@ -551,9 +551,8 @@ async function fetchRecipes() {
 
 const router = new Router(
   function () {
-    document.querySelector('.section-recipes-expand').classList.remove('seen');
-    document.querySelector('.section-recipes-display').classList.add('seen');
-    document.querySelector('.featured').classList.add('seen')
+    document.querySelector('.section-recipes-expand').classList.add('hide');
+    document.querySelector('.section-recipes-display').classList.remove('hide');
   }
 );
 /* @function the function creates a carousel and attach the carousel to the main page
@@ -574,14 +573,14 @@ async function createCarousel(selector) {
       recipeCard.data = res.results[i];
       bindRecipeExpand(recipeCard, function () {
         fetchById(recipeCard.data.id).then(function (res) {
-          document.querySelector('.section-recipes-expand').classList.add('seen');
-          document.querySelector('.section-recipes-display').classList.remove('seen');
-          document.querySelector('.featured').classList.remove('seen');
+          document.querySelector('.section-recipes-expand').classList.remove('hide');
+          document.querySelector('.section-recipes-display').classList.add('hide');
           document.querySelector('recipe-expand').data = res;
         }
         )
       });
-      if (i < 5) {
+      //Test
+      if (i < 3) {
         // show only three recipe in each carousel
         carousel.appendChild(recipeCard);
       }

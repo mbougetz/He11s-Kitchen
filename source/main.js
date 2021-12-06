@@ -7,7 +7,8 @@ const router = new Router(
   function () {
     document.querySelector('.section-recipes-expand').classList.remove('seen');
     document.querySelector('.section-recipes-display').classList.add('seen');
-    document.querySelector('.featured').classList.add('seen')
+    document.querySelector('.featured').classList.add('seen');
+    history.pushState({page: 'home'}, '', window.location.origin + window.location.pathname);
   }
 );
 

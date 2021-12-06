@@ -791,7 +791,8 @@ function bindShowLess(btn, carousel, localRecipe, numRecipesInCarousel) {
   btn.addEventListener('click', () => {
     //check the index of current recipes 
     for (let i = 0; i < localRecipe.length / numRecipesInCarousel; i++) {
-      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * numRecipesInCarousel].title) {
+      //if (carousel.querySelector('recipe-card').data.title == localRecipe[i * numRecipesInCarousel].title) {
+      if (carousel.querySelector('recipe-card').data.title == localRecipe[i * 3].data.title){
         curPtr = (i - 1) * numRecipesInCarousel;
         break;
       }
@@ -806,9 +807,11 @@ function bindShowLess(btn, carousel, localRecipe, numRecipesInCarousel) {
       if(carousel.querySelector('recipe-card'))carousel.removeChild(carousel.querySelector('recipe-card')); //test
     }
     for (let i = 0; i < numRecipesInCarousel; i++) {
-      const recipe = document.createElement('recipe-card');
+      /*const recipe = document.createElement('recipe-card');
       recipe.data = localRecipe[i + curPtr];
-      carousel.insertBefore(recipe, carousel.querySelector('.forward'));
+      carousel.insertBefore(recipe, carousel.querySelector('.forward'));*/
+
+      carousel.insertBefore(localRecipe[i+curPtr], carousel.querySelector('.forward'));
 
       
 

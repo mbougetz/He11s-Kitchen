@@ -128,7 +128,8 @@ class Card extends HTMLElement {
     cookTime = cookTime + " Minutes"; //TEMP VAL;convert time from API into readable string
 
     //Recipe reviews
-    const ratingValue = cardData.spoonacularScore/20; 
+    let ratingValue = 5; 
+    if(cardData.spoonacularScore) ratingValue = cardData.spoonacularScore/20;
     var numStars = Math.round(ratingValue);
     const rating = document.createElement("div");
     rating.classList.add("rating-time");

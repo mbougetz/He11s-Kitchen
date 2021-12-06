@@ -38,9 +38,9 @@ export async function fetchParams (parameters) {
     })
     .catch((reason) => reject(reason));*/
 
-    
+    console.log(parameters);
     fetch(
-      "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?&${parameters}" + parameters,
+      "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?&" + parameters,
       {
         method: "GET",
         headers: {

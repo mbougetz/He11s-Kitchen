@@ -160,9 +160,12 @@ class RecipeExpand extends HTMLElement {
         rating.classList.add('list-element');
         let numStars = 5;
         if(cardData.spoonacularScore)numStars = Math.round(cardData.spoonacularScore/20);
-        console.log(cardData);
+
         rating.innerHTML = `Rating: <img src="./images/${numStars}star.png" id="starRate">`
         const allergens = document.createElement('li');
+
+        console.log(cardData);
+
         var allergensList = 'Allergens: ';
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {
             allergensList += cardData.extendedIngredients[i].name;

@@ -3,6 +3,14 @@ import { Router } from "./Router.js";
 const recipes = []; // instead of using json files, we want recipes from the API
 const recipeData = {}; // used to access the recipe data from Spoonacular
 
+const router = new Router(
+  function () {
+    document.querySelector('.section-recipes-expand').classList.remove('seen');
+    document.querySelector('.section-recipes-display').classList.add('seen');
+    document.querySelector('.featured').classList.add('seen')
+  }
+);
+
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
@@ -21,6 +29,7 @@ async function init() {
   //Display homepage by default
   homeCarousels(6);
   bindEsc();
+  router.onPopstate();
 }
 
 //If no recipes have been stored, creates an array to store them in
@@ -533,13 +542,6 @@ async function fetchRecipes() {
   });
 }*/
 
-const router = new Router(
-  function () {
-    document.querySelector('.section-recipes-expand').classList.remove('seen');
-    document.querySelector('.section-recipes-display').classList.add('seen');
-    document.querySelector('.featured').classList.add('seen')
-  }
-);
 /* @function the function creates a carousel and attach the carousel to the main page
    @param input a filter word to select recipes for the carousel
    @return return an array of recipes that contained in the carousel*/
@@ -641,14 +643,14 @@ function bindShowLess(btn, carousel, localRecipe) {
 function bindRecipeExpand(recipeCard, recipeExpand) {
   router.setExpand(recipeCard.data.id, recipeExpand);
   recipeCard.addEventListener('click', (e) => {
-    router.navigate(recipeCard.data.id);
+    router.navigate(recipeCard.data.id, false);
   })
 }
 
 function bindEsc() {
   document.addEventListener('keydown', (e) => {
     if (e.key == 'Escape') {    
-      router.navigate('home');
+      router.navigate('home', false);
     }
   })
 }

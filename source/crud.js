@@ -69,7 +69,7 @@ function addRecipe() {
     image:
       "https://images.freeimages.com/images/large-previews/7f5/plate-1329634.jpg",
     extendedIngredients: [recipeIngredients],
-    directions: recipeInstructions,
+    instructions: recipeInstructions, //used to be property directions
     isLocal: true, //Designates card created as being a local recipe, not one fetched from spoonacular
   };
 

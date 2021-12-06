@@ -154,12 +154,12 @@ class RecipeExpand extends HTMLElement {
         prepTime.classList.add('list-element');
         prepTime.innerText = `Prep time: ${cardData.readyInMinutes}`;
         const dietary = document.createElement('li');
-        dietary.innerText = `Dietary restrictions: ${cardData.vagan == true ? 'vagan' : 'not vagan'}`
+        dietary.innerText = `Dietary restrictions: ${cardData.vegan == true ? 'vegan' : 'not vegan'}`
         dietary.classList.add('list-element');
         const rating = document.createElement('li');
         rating.classList.add('list-element');
-        let numStars = 0;
-        numStars = Math.round(cardData.spoonacularScore/20);
+        let numStars = 5;
+        if(cardData.spoonacularScore)numStars = Math.round(cardData.spoonacularScore/20);
         console.log(cardData);
         rating.innerHTML = `Rating: <img src="./images/${numStars}star.png" id="starRate">`
         const allergens = document.createElement('li');
@@ -204,9 +204,12 @@ class RecipeExpand extends HTMLElement {
         ingredTitle.innerHTML = `<h2> Ingredients <h2><p>U.S/metric</p>`;
 
         const ingredientsTable = document.createElement('ingredients-table-exp');
+
+        console.log(cardData.extendedIngredients);
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {
             const ingredient = document.createElement('li');
-            ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i].originalString}</span>` 
+            if(cardData.extendedIngredients[i].originalString) ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i].originalString}</span>` ;
+            else ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i]}</span>` ;
             ingredientsTable.appendChild(ingredient);
         }
 
@@ -224,7 +227,7 @@ class RecipeExpand extends HTMLElement {
 
         //Testing- don't load if data dne
         const nutrientDesc = document.createElement('section');
-        //if(cardData.nutrition && cardData.nutrition.nutrients){
+        if(cardData.nutrition && cardData.nutrition.nutrients){
           
           nutrientDesc.classList.add('nutrition-desc-exp');
           const nutTitle = document.createElement('h2');
@@ -238,7 +241,7 @@ class RecipeExpand extends HTMLElement {
           }
           nutrientDesc.appendChild(nutTitle);
           nutrientDesc.appendChild(nutrientTable);
-        //}
+        }
 
         //#endregion
         wrapper.appendChild(title);

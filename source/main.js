@@ -8,22 +8,6 @@ window.addEventListener("DOMContentLoaded", init);
 async function init() {
   console.log("initiating");
 
-  /*
-  try {
-    await fetchRecipes();
-  } catch (err) {
-    console.log(`Error fetching recipes: ${err}`);
-    return;
-  }
-  */
-  /*
-  let params = 'query=pasta&maxFat=25&nuber=2';
-  await fetchParams(params).then(function(res){
-   const fetchedRecipes = res.results;
-   for (let i = 0; i < fetchedRecipes.length; i++) {
-     recipeData[fetchedRecipes[i].title] = fetchedRecipes[i].id;
-   }
-  })*/
   createCarousel('burger');
   //Initialize localStorage for use
   initLocalStorage();

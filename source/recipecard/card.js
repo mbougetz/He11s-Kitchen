@@ -7,7 +7,7 @@ class Card extends HTMLElement {
   set data(cardData) {
     if (!cardData) return; //Exit function if data DNE
 
-    this.json = cardData;
+    this.json = cardData; 
 
     const cardStyle = document.createElement("style");
     const cardArticle = document.createElement("article");
@@ -128,51 +128,24 @@ class Card extends HTMLElement {
     cookTime = cookTime + " Minutes"; //TEMP VAL;convert time from API into readable string
 
     //Recipe reviews
-    const ratingValue = 4.5; //TEMP VAL; reviews to be added later
-    const numRatings = 327; //^^
+    const ratingValue = cardData.spoonacularScore/20; 
+    var numStars = Math.round(ratingValue);
     const rating = document.createElement("div");
     rating.classList.add("rating-time");
 
     //TEMP VAL; number of stars to display
     rating.innerHTML = `
         <span>${ratingValue}</span>
-        <img src="images\\5-stars-red.jpeg" class = "rating"></img>
+        <img src="images\\${numStars}star.png" class = "rating"></img>
         <img src="images\\time-logo.png" class = "time"></img>
         <p>${cookTime}</p>
         `;
-
-    if (numRatings != 0) {
-      //  rating.innerHTML += `<span>(${numRatings})</span>`;
-    }
-    //Maybe do
-    else {
-      rating.innerHTML = `
-          <span>No Reviews</span>
-        `;
-    }
-
-    //TODO: Change picture based on # of stars
-
-    // //Recipe ingredients
-    // var ingredientsList = ""; //TEMP VAL; Get list of ingredients, store here as plaintext
-    // for (let i = 0; i < cardData.extendedIngredients.length; i++) {
-    //   ingredientsList += cardData.extendedIngredients[i].originalString;
-    //   if (i != cardData.extendedIngredients.length - 1) ingredientsList += ", ";
-    // }
-
-    // const ingredients = document.createElement("p");
-    // ingredients.classList.add("ingredients");
-    // ingredients.innerText = ingredientsList.substring(0, 100) + " (...)"; //Abbreviates ingredients text on card
-
     //TODO: Add recipe tag to card
 
     //Add elements to recipe card
     cardArticle.appendChild(thumbnailImg);
     cardArticle.appendChild(title);
     cardArticle.appendChild(rating);
-    //cardArticle.appendChild(time);
-    // cardArticle.appendChild(ingredients);
-
     this.shadowRoot.append(cardStyle, cardArticle);
   }
 

@@ -44,6 +44,7 @@ class RecipeExpand extends HTMLElement {
             display: flex;
         }
         .list-element {
+            vertical-align: middle;
             padding: 0.5em;
         }
         /* set padding and background color for each section in page */
@@ -95,6 +96,7 @@ class RecipeExpand extends HTMLElement {
         #starRate{
             height: 25px;
             width: 100px;
+            vertical-align: inherit;
         }
         
         /* the box containing the ingredient content(the checkbox stuff)*/
@@ -156,7 +158,10 @@ class RecipeExpand extends HTMLElement {
         dietary.classList.add('list-element');
         const rating = document.createElement('li');
         rating.classList.add('list-element');
-        rating.innerHTML = `Rating: <img src="./images/5-stars-red.jpeg" id="starRate">`
+        let numStars = 0;
+        numStars = Math.round(cardData.spoonacularScore/20);
+        console.log(cardData);
+        rating.innerHTML = `Rating: <img src="./images/${numStars}star.png" id="starRate">`
         const allergens = document.createElement('li');
         var allergensList = 'Allergens: ';
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {

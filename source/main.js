@@ -239,10 +239,11 @@ function clearCarousels() {
 async function homeCarousels(numResults) {
   clearCarousels();
 
+
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
   if (localRecipes && localRecipes.length != 0) newLoadLocalRecipes();
-  else await createCarousel("sandwich", numResults);
+  else await createCarousel("sandwich", numResults, "Top Sandwich Recipes", recipesDisplayed);
 
 
 
@@ -408,6 +409,8 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
 
 
 function newLoadLocalRecipes() {
+
+
   //Retrieve the array of local recipes from localstorage
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
 
@@ -426,7 +429,6 @@ function newLoadLocalRecipes() {
     // set the div's carousel
   carousel.setAttribute('class', 'carousel');
 
-  console.log(stringifiedRecipies.length);
 
   //Create an array of all recipe data
   let newCardsArray = [];
@@ -437,9 +439,11 @@ function newLoadLocalRecipes() {
     newCard.data = stringifiedRecipies[i].data;
     newCardsArray[i] = newCard;
 
-    console.log(newCard);
-
+    
+    //console.log(newCard);
     bindRecipeExpand(newCard, function () {
+
+      console.log("bindRecipeExpand called for: " + newCard.data.title);
       
       document.querySelector('.section-recipes-expand').classList.add('seen'); //swap add and remove
       document.querySelector('.section-recipes-display').classList.remove('seen');
@@ -449,7 +453,10 @@ function newLoadLocalRecipes() {
       
     });
 
-    carousel.appendChild(newCard);
+    if (i < recipesDisplayed) { //Only load numRecipesShown per carousel
+      // show only three recipe in each carousel
+      carousel.appendChild(newCard);
+    }
 
     
 
@@ -465,7 +472,7 @@ function newLoadLocalRecipes() {
     document.querySelector('.recipes-wrapper').appendChild(cardTitle);
 
 
-
+    //console.log(newCardsArray);
 
   // append showMore button to the carousel.
   const showMore = document.createElement('a');
@@ -473,16 +480,30 @@ function newLoadLocalRecipes() {
   showMore.innerHTML="&#10095";
   carousel.appendChild(showMore);
   const showLess = document.createElement('a');
-  bindShowMore(showMore, carousel, newCardsArray);
+  bindShowMore(showMore, carousel, newCardsArray, recipesDisplayed);
+  //bindShowMore(showMore, carousel, newCardsArray);
   showLess.setAttribute('class', 'back');
   showLess.innerHTML="&#10094";
   carousel.prepend(showLess);
-  bindShowLess(showLess, carousel, newCardsArray);
+  bindShowLess(showLess, carousel, newCardsArray, recipesDisplayed);
+  //bindShowLess(showLess, carousel, newCardsArray);
   document.querySelector('.recipes-wrapper').appendChild(carousel);
 }
 
 
+function bindRecipeExpand(recipeCard, recipeExpand) {
+  console.log("Binding: " + recipeCard.data.title);
 
+  if(recipeCard.data.id) router.setExpand(recipeCard.data.id, recipeExpand);
+  //else router.setExpand(recipeCard.data.title, recipeExpand); //here!!!!!! might break if multiple local recipes have same title
+  //console.log("Binding again: " + recipeCard.data.title);
+
+  recipeCard.addEventListener('click', (e) => {
+    console.log("Navigating to: " + recipeCard.data.title); //aaaaaaaaaaaaaaaaa
+    if(recipeCard.data.id) router.navigate(recipeCard.data.id, false);
+    //else router.navigate(recipeCard.data.title, false);
+  })
+}
 
 
 
@@ -490,7 +511,7 @@ function newLoadLocalRecipes() {
 function bindShowMore(btn, carousel, localRecipe, numRecipesInCarousel) {
   if(!numRecipesInCarousel) numRecipesInCarousel = 5;
 
-  console.log(numRecipesInCarousel);
+  
 
   let curPtr = 0;
   btn.addEventListener('click', async () => {
@@ -503,15 +524,16 @@ function bindShowMore(btn, carousel, localRecipe, numRecipesInCarousel) {
     }
     // if current pointer is at the end of the array, there is no more recipe to be shown
     if (curPtr >= localRecipe.length) {
-      window.alert('no more recipe to show');
+      //window.alert('no more recipe to show');
       return;
     }
     for (let i = 0; i < numRecipesInCarousel; i++) {
       carousel.removeChild(carousel.querySelector('recipe-card'));
     }
     for (let i = 0; i < numRecipesInCarousel; i++) {
-
-      carousel.insertBefore(localRecipe[i+curPtr], btn);
+      console.log(localRecipe);
+      console.log(localRecipe[i+curPtr]);
+      if(localRecipe[i+curPtr])carousel.insertBefore(localRecipe[i+curPtr], btn);
 
 
     }
@@ -533,7 +555,7 @@ function bindShowLess(btn, carousel, localRecipe, numRecipesInCarousel) {
     }
     // if current pointer is at the end of the array, there is no more recipe to be shown
     if (curPtr < 0) {
-      window.alert('no more recipe to show');
+      //window.alert('no more recipe to show');
       return;
     }
 
@@ -542,7 +564,7 @@ function bindShowLess(btn, carousel, localRecipe, numRecipesInCarousel) {
     }
     for (let i = 0; i < numRecipesInCarousel; i++) {
 
-      carousel.insertBefore(localRecipe[i+curPtr], carousel.querySelector('.forward'));
+      if(localRecipe[i+curPtr])carousel.insertBefore(localRecipe[i+curPtr], carousel.querySelector('.forward'));
 
       
 
@@ -550,12 +572,7 @@ function bindShowLess(btn, carousel, localRecipe, numRecipesInCarousel) {
   })
 }
 
-function bindRecipeExpand(recipeCard, recipeExpand) {
-  router.setExpand(recipeCard.data.id, recipeExpand);
-  recipeCard.addEventListener('click', (e) => {
-    router.navigate(recipeCard.data.id, false);
-  })
-}
+
 
 function bindEsc() {
   document.addEventListener('keydown', (e) => {

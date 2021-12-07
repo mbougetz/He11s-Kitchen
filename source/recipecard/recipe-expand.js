@@ -150,9 +150,12 @@ class RecipeExpand extends HTMLElement {
         const description = document.createElement('ul');
         description.classList.add('descriptionBox', 'description');
         description.stlye = 'list-style:none'
+
         const prepTime = document.createElement('li');
         prepTime.classList.add('list-element');
-        prepTime.innerText = `Prep time: ${cardData.readyInMinutes}`;
+        prepTime.innerText = `Prep time: ${cardData.readyInMinutes}`; //TODO: convert to "x hours y minutes" format if over 59 minutes
+
+
         const dietary = document.createElement('li');
         dietary.innerText = `Dietary restrictions: ${cardData.vegan == true ? 'vegan' : 'not vegan'}`
         dietary.classList.add('list-element');
@@ -164,7 +167,6 @@ class RecipeExpand extends HTMLElement {
         rating.innerHTML = `Rating: <img src="./images/${numStars}star.png" id="starRate">`
         const allergens = document.createElement('li');
 
-        console.log(cardData);
 
         var allergensList = 'Allergens: ';
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {
@@ -208,7 +210,6 @@ class RecipeExpand extends HTMLElement {
 
         const ingredientsTable = document.createElement('ingredients-table-exp');
 
-        console.log(cardData.extendedIngredients);
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {
             const ingredient = document.createElement('li');
             if(cardData.extendedIngredients[i].originalString) ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i].originalString}</span>` ;

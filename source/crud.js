@@ -34,11 +34,39 @@ function redirectToEdit(){
   window.location.href = "editRecipe.html";
 }
 
+var numIngredient = 1;
 //Runs once crud.html has been loaded
 function crudPageInit() {
+
+  numIngredient = 1
+
+  //Bind add recipe button
   document.getElementById("add").addEventListener("click", function () {
     addRecipe();
   });
+
+  //Bind cancel add recipe button
+  document.getElementById("cancel").addEventListener("click", function () {
+    redirectToIndex();
+  });
+
+  //Bind addIngredient button to add a new ingredient input box
+  document.getElementById("addIngredient").addEventListener("click", function () {
+    numIngredient++;
+    let wrapper = document.getElementById("ingredientInputWrapper");
+
+    console.log(numIngredient);
+
+    let newInputBox = document.createElement("textarea");
+    newInputBox.setAttribute("id", "ingredientInputField");
+    newInputBox.setAttribute("class", "ingredientInput");
+    newInputBox.setAttribute("placeholder", "Add Ingredient #" + numIngredient + ":");
+
+    wrapper.appendChild(newInputBox);
+
+  });
+  
+
 }
 
 //Runs once editRecipe.html has been loaded
@@ -50,25 +78,45 @@ function editPageInit() {
 
 //Take user input and create a recipe and add it to localstorage
 function addRecipe() {
+  
+  //First generate random id to use as a hash
+  let hashID = "" + Math.round(Math.random()*10) + Math.round(Math.random()*10) + Math.round(Math.random()*10) + Math.round(Math.random()*10) + Math.round(Math.random()*10)
+  hashID *= 1000000;
+
   //Get user input values from page
   let recipeImage = document.getElementById("uploadFile").value;
   let recipeTitle = document.getElementById("recipeTitle").value;
-  let recipeAuthor = document.getElementById("name").value;
+  //let recipeAuthor = document.getElementById("name").value;
   //let recipeServings = document.getElementById("recipeServingsField").value;
   let recipeTime = document.getElementById("time").value;
-  let recipeTags = document.getElementById("tag").value;
-  let recipeIngredients = document.getElementById("ingredients").value;
+  //let recipeTags = document.getElementById("tag").value;
+
+  //let recipeIngredients = document.getElementById("ingredients").value;
+
+  let allRecipeIngredients = document.getElementsByClassName ("ingredientInput");
+  
+
+  let recipeIngredientArr = [];
+  for(let i = 0; i < allRecipeIngredients.length; i++){
+    recipeIngredientArr[i] = allRecipeIngredients[i].value;
+
+  }
+
+  
+
   let recipeInstructions = document.getElementById("instructions").value;
 
   //Create object to hold data
   let newRecipe = {
+    id: hashID,
     title: recipeTitle,
-    author: recipeAuthor,
-    tags: recipeTags,
+    //author: recipeAuthor,
+    //tags: recipeTags,
     readyInMinutes: recipeTime,
     image:
       "https://images.freeimages.com/images/large-previews/7f5/plate-1329634.jpg",
-    extendedIngredients: [recipeIngredients],
+    //extendedIngredients: [recipeIngredients],
+    extendedIngredients: recipeIngredientArr,
     instructions: recipeInstructions, //used to be property directions
     isLocal: true, //Designates card created as being a local recipe, not one fetched from spoonacular
   };

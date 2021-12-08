@@ -26,6 +26,8 @@ async function init() {
   //Initialize localStorage for use
   initLocalStorage();
 
+  initEditMode();
+
   //Bind search events to search bar
   bindSubPages();
 
@@ -45,6 +47,12 @@ function initLocalStorage() {
   if (!localStorage.getItem("localRecipes")) {
     let emptyArr = [];
     localStorage.setItem("localRecipes", JSON.stringify(emptyArr));
+  }
+}
+
+function initEditMode() {
+  if (!localStorage.getItem("inEditMode")) {
+    localStorage.setItem("inEditMode", JSON.stringify(false));
   }
 }
 
@@ -199,7 +207,7 @@ function bindSearchBars() {
   let allHeroSearchButtons = document.querySelectorAll("[id=\"heroSearchButton\"]");
   for (let i = 0; i < allHeroSearchButtons.length; i++){
     allHeroSearchButtons[i].addEventListener("click", function (event) {
-      //event.preventDefault();
+        event.preventDefault();//Test
         document.getElementById("topSearch").setAttribute("value", allHeroSearchBars[i].value);
         
         document.getElementById("topSearchButton").click();
@@ -242,16 +250,12 @@ async function homeCarousels(numResults) {
 
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-  if (localRecipes && localRecipes.length != 0) newLoadLocalRecipes();
+  console.log(localRecipes);
+  if (localRecipes && localRecipes.length != 0 && localRecipes[0] != "{}") newLoadLocalRecipes();
   else await createCarousel("sandwich", numResults, "Top Sandwich Recipes", recipesDisplayed);
-
-
-
+  
   await createCarousel("burger", numResults, "Top Burger Recipes", recipesDisplayed);
   await createCarousel("pasta", numResults, "Top Pasta Recipes", recipesDisplayed);
-
-  
-
 
 }
 
@@ -359,14 +363,14 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
 
 
     for (let i = 0; i < res.results.length; i++) {
-      //localRecipe[i] = res.results[i]; //test
       recipeData[res.results[i].title] = res.results[i].id;
       // create recipe card
       let recipeCard = document.createElement('recipe-card');
       recipeCard.data = res.results[i];
       bindRecipeExpand(recipeCard, function () {
         fetchById(recipeCard.data.id).then(function (res) {
-
+          recipeCard.data.isLocal = false; //Mark as not a local recipe
+          console.log(recipeCard.data);
           document.querySelector('.section-recipes-expand').classList.add('seen');
           document.querySelector('.section-recipes-display').classList.remove('seen');
           document.querySelector('.featured').classList.remove('seen');//test
@@ -383,13 +387,7 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
         carousel.appendChild(recipeCard);
       }
     }
-
-    /*<a class="back">&#10094</a>
-    <a class="forward">&#10095</a>*/
-                
-
-
-          
+     
     // append showMore button to the carousel.
     const showMore = document.createElement('a');
     showMore.setAttribute('class', 'forward');
@@ -409,16 +407,20 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
 
 
 function newLoadLocalRecipes() {
-
-
   //Retrieve the array of local recipes from localstorage
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-
   let stringifiedRecipies = [];
+
+  console.log(localRecipes);
+  console.log(localRecipes[0]);
+  
 
   //Parse each stored recipe from json format back into js-useable data
   //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
   for (let i = 0; i < localRecipes.length; i++) {
+    console.log(i);
+    console.log(localRecipes[i]);
+    console.log(JSON.parse(localRecipes[i]));
     stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
   }
 
@@ -436,15 +438,13 @@ function newLoadLocalRecipes() {
 
 
     let newCard = document.createElement("recipe-card");
-    newCard.data = stringifiedRecipies[i].data;
+    if(stringifiedRecipies[i].data) newCard.data = stringifiedRecipies[i].data; //AAAAAAAAAAAAAAAAAA
+    else newCard.data = stringifiedRecipies[i].json;
     newCardsArray[i] = newCard;
 
+    console.log(newCard);
     
-    //console.log(newCard);
     bindRecipeExpand(newCard, function () {
-
-      console.log("bindRecipeExpand called for: " + newCard.data.title);
-      
       document.querySelector('.section-recipes-expand').classList.add('seen'); //swap add and remove
       document.querySelector('.section-recipes-display').classList.remove('seen');
       document.querySelector('.featured').classList.remove('seen');
@@ -454,7 +454,6 @@ function newLoadLocalRecipes() {
     });
 
     if (i < recipesDisplayed) { //Only load numRecipesShown per carousel
-      // show only three recipe in each carousel
       carousel.appendChild(newCard);
     }
 
@@ -471,9 +470,6 @@ function newLoadLocalRecipes() {
     cardTitle.innerText + '<i class="fa fa-long-arrow-right"></i>';
     document.querySelector('.recipes-wrapper').appendChild(cardTitle);
 
-
-    //console.log(newCardsArray);
-
   // append showMore button to the carousel.
   const showMore = document.createElement('a');
   showMore.setAttribute('class', 'forward');
@@ -481,27 +477,18 @@ function newLoadLocalRecipes() {
   carousel.appendChild(showMore);
   const showLess = document.createElement('a');
   bindShowMore(showMore, carousel, newCardsArray, recipesDisplayed);
-  //bindShowMore(showMore, carousel, newCardsArray);
   showLess.setAttribute('class', 'back');
   showLess.innerHTML="&#10094";
   carousel.prepend(showLess);
   bindShowLess(showLess, carousel, newCardsArray, recipesDisplayed);
-  //bindShowLess(showLess, carousel, newCardsArray);
   document.querySelector('.recipes-wrapper').appendChild(carousel);
 }
 
 
 function bindRecipeExpand(recipeCard, recipeExpand) {
-  console.log("Binding: " + recipeCard.data.title);
-
-  if(recipeCard.data.id) router.setExpand(recipeCard.data.id, recipeExpand);
-  //else router.setExpand(recipeCard.data.title, recipeExpand); //here!!!!!! might break if multiple local recipes have same title
-  //console.log("Binding again: " + recipeCard.data.title);
-
+  router.setExpand(recipeCard.data.id, recipeExpand);
   recipeCard.addEventListener('click', (e) => {
-    console.log("Navigating to: " + recipeCard.data.title); //aaaaaaaaaaaaaaaaa
-    if(recipeCard.data.id) router.navigate(recipeCard.data.id, false);
-    //else router.navigate(recipeCard.data.title, false);
+    router.navigate(recipeCard.data.id, false);
   })
 }
 

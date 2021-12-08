@@ -6,14 +6,10 @@ export class Router {
   }
 
   setExpand(page, pageFunc) {
-    console.log(this);
     this[page] = pageFunc;
   }
 
   navigate(page, statePopped) {
-    console.log(this);
-    console.log(page);
-    console.log(this[page]);
     if (!this[page]) {
       window.alert('page does not exist');
       return;
@@ -29,7 +25,6 @@ export class Router {
       console.log(window.location);
     }
 
-    //console.log(this[page]);
     this[page]();
   }
   

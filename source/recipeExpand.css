@@ -4,6 +4,9 @@ main {
   padding-top: 0.5mm;
   font-family: "Century Gothic", "Candara", "serif";
 }
+
+
+
 /* the entire page (put a grid around it)  */
 .wrapper-exp {
   display: grid;

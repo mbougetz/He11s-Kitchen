@@ -153,7 +153,22 @@ class RecipeExpand extends HTMLElement {
 
         const prepTime = document.createElement('li');
         prepTime.classList.add('list-element');
-        prepTime.innerText = `Prep time: ${cardData.readyInMinutes}`; //TODO: convert to "x hours y minutes" format if over 59 minutes
+
+        let time = cardData.readyInMinutes;
+
+        if(time > 60){
+            let hours = Math.floor(time/60);
+            let minutes = (time - 60 * hours);
+
+            if(hours == 1) time = hours + " hour and " + minutes + " minutes";
+            else time = hours + " hours and " + minutes + " minutes";
+
+        } else time += " minutes";
+        
+
+        
+
+        prepTime.innerText = `Prep time: ${time}`; //TODO: convert to "x hours y minutes" format if over 59 minutes
 
 
         const dietary = document.createElement('li');
@@ -161,6 +176,7 @@ class RecipeExpand extends HTMLElement {
         dietary.classList.add('list-element');
         const rating = document.createElement('li');
         rating.classList.add('list-element');
+        rating.setAttribute("id", "ratingBox"); 
         let numStars = 5;
         if(cardData.spoonacularScore)numStars = Math.round(cardData.spoonacularScore/20);
 
@@ -170,43 +186,137 @@ class RecipeExpand extends HTMLElement {
 
         var allergensList = 'Allergens: ';
         for (let i = 0; i < cardData.extendedIngredients.length; i++) {
-            allergensList += cardData.extendedIngredients[i].name;
+            if(cardData.extendedIngredients[i].name) allergensList += cardData.extendedIngredients[i].name;
+            else allergensList += cardData.extendedIngredients[i]; 
             if (i != cardData.extendedIngredients.length - 1) {
                 allergensList += ', '
             }
         }
         allergens.innerText = allergensList;  
         allergens.classList.add('list-element'); 
-        const summary = document.createElement('li');
-        summary.innerHTML = 'Summary: ' + cardData.summary
-        summary.classList.add('list-element');
+
+        let summary = "";
+        if(!cardData.isLocal){
+            summary = document.createElement('li');
+            summary.innerHTML = 'Summary: ' + cardData.summary
+            summary.classList.add('list-element');
+        }
 
         description.appendChild(prepTime);
         description.appendChild(dietary);
-        description.appendChild(rating);
+        if(!cardData.isLocal)description.appendChild(rating);
         description.appendChild(allergens);
-        description.appendChild(summary);
+        if(!cardData.isLocal)description.appendChild(summary);
 
         const favIcon = document.createElement('img');
         favIcon.src = './images/favoriteStar.png'
         favIcon.style = 'float: left';
         favIcon.id = 'star-img'
         const favBut = document.createElement('p');
-        favBut.innerText = 'Add to Favorite'
+        favBut.innerText = 'Add to Favorite' //Add to favorite button
         const fav = document.createElement('div');
         fav.classList.add('fav-exp')
         fav.appendChild(favIcon);
         fav.appendChild(favBut);
 
+        const editIcon = document.createElement('img');
+        editIcon.src = './images/favoriteStar.png'
+        editIcon.style = 'float: left';
+        editIcon.id = 'star-img'
+        const editBut = document.createElement('p');
+        editBut.innerText = 'Edit Recipe' //Add to favorite button
+        const edit = document.createElement('div');
+        edit.setAttribute("id", "editButton");
+        edit.classList.add('edit-exp')
+        edit.appendChild(editIcon);
+        edit.appendChild(editBut);
+
+        //On clicking edit button
+        edit.addEventListener("click", function(){
+            //Let crud page know to replace the old data in localStorage
+            localStorage.setItem("inEditMode", JSON.stringify(true));
+
+            //Store the data to pass into the crud page
+            localStorage.setItem("recipeDataToEdit", JSON.stringify(cardData));
+
+            //Navigate to the crud page
+            window.location.href = "crud.html"; //redirect to crud
+
+        });
+
+        const deleteIcon = document.createElement('img');
+        deleteIcon.src = './images/favoriteStar.png'
+        deleteIcon.style = 'float: left';
+        deleteIcon.id = 'star-img'
+        const deleteBut = document.createElement('p');
+        deleteBut.innerText = 'Delete Recipe' //Add to favorite button
+        const del = document.createElement('div');
+        del.setAttribute("id", "deleteButton");
+        del.classList.add('del-exp')
+        del.appendChild(deleteIcon);
+        del.appendChild(deleteBut);
+        
+        del.addEventListener("click", function(){
+
+            //Retrieve the array of local recipes from localstorage
+            let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
+            let stringifiedRecipies = [];
+
+            console.log(localRecipes);
+
+            //Parse each stored recipe from json format back into js-useable data
+            //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
+            for (let i = 0; i < localRecipes.length; i++) {
+                stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
+                console.log(stringifiedRecipies[i]);
+                console.log(localRecipes[i]);
+            }
+
+            console.log(stringifiedRecipies);
+
+            //Get the index of the old recipe data to remove in the locally stored array
+            let removeIndex = -1;
+            for(let i = 0; i < stringifiedRecipies.length; i++){
+                console.log(stringifiedRecipies[i]);
+                if(stringifiedRecipies[i].data) {
+                    if(stringifiedRecipies[i].data.id == cardData.id) removeIndex = i;
+                    console.log(stringifiedRecipies[i].data.id);
+                }
+                else if(stringifiedRecipies[i].json) {
+                    if(stringifiedRecipies[i].json.id == cardData.id) removeIndex = i;
+                    console.log(stringifiedRecipies[i].json.id);
+                }
+            }
+
+            //Remove old recipe from array
+            //if(removeIndex != -1)stringifiedRecipies.splice(removeIndex, 1);
+            if(removeIndex != -1)localRecipes.splice(removeIndex, 1);
+            if(removeIndex == -1) alert("ID not found! Expected ID: "+cardData.id);
+
+
+            //Push updated local recipe array back to localStorage
+            localStorage.setItem("localRecipes", JSON.stringify(localRecipes));
+
+            //exit expand view upon deletion
+            location.reload();
+        });
+
+
         recipeDesc.appendChild(mainImg);
         recipeDesc.appendChild(description)
         recipeDesc.appendChild(fav);
+
+        if(cardData.isLocal){
+            recipeDesc.appendChild(edit);
+            recipeDesc.appendChild(del);
+        }
+
         //#endregion
         //#region 
         const ingredientDesc = document.createElement('section');
         ingredientDesc.classList.add('ingredients-desc-exp')
         const ingredTitle = document.createElement('div');
-        ingredTitle.innerHTML = `<h2> Ingredients <h2><p>U.S/metric</p>`;
+        ingredTitle.innerHTML = `<h2> Ingredients </h2>`;
 
         const ingredientsTable = document.createElement('ingredients-table-exp');
 
@@ -224,7 +334,8 @@ class RecipeExpand extends HTMLElement {
         const tutorialDesc = document.createElement('section');
         tutorialDesc.classList.add('tutorial-desc-exp');
         const instructionTable = document.createElement('div');
-        instructionTable.innerHTML = cardData.instructions
+        instructionTable.innerHTML = `<h2> Directions </h2>`;
+        instructionTable.innerHTML += cardData.instructions;
         tutorialDesc.appendChild(instructionTable);
         //#endregion
         //#region 

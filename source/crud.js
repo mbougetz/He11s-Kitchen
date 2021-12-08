@@ -71,6 +71,16 @@ function crudPageInit() {
 
   });
 
+  //Bind delete ingredient button
+  document.getElementById("delIngredient").addEventListener("click", function () {
+    let allIngInputs = document.getElementsByClassName ("ingredientInput");
+    let lastInput = allIngInputs[allIngInputs.length - 1];
+    if(allIngInputs.length != 1) {
+      document.getElementById("ingredientInputWrapper").removeChild(lastInput);
+      numIngredient--;
+    }
+  });
+
   if(JSON.parse(localStorage.getItem("inEditMode"))) enterEditMode();
   
 

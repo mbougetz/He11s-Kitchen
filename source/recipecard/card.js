@@ -100,7 +100,6 @@ class Card extends HTMLElement {
           `;
 
     //Recipe Title
-    //const titleText = "Temp Title Text"; //TEMP VAL; get title from API
     const titleText = cardData.title;
 
     const title = document.createElement("p");
@@ -124,8 +123,16 @@ class Card extends HTMLElement {
     //Recipe cook time
     let cookTime = cardData.readyInMinutes; //TEMP VAL; get from API
 
-    //const time = document.createElement('time');
-    cookTime = cookTime + " Minutes"; //TEMP VAL;convert time from API into readable string
+    if(cookTime > 60){
+      let hours = Math.floor(cookTime/60);
+      let minutes = (cookTime - 60 * hours);
+
+  
+      if(hours == 1) cookTime = hours + " hour and " + minutes + " minutes";
+      else cookTime = hours + " hours and " + minutes + " minutes";
+
+
+    } else cookTime += " minutes";
 
     //Recipe reviews
     let ratingValue = 5; 
@@ -135,13 +142,10 @@ class Card extends HTMLElement {
     rating.classList.add("rating-time");
 
     //TEMP VAL; number of stars to display
-    rating.innerHTML = `
-        <span>${ratingValue}</span>
-        <img src="images\\${numStars}star.png" class = "rating"></img>
-        <img src="images\\time-logo.png" class = "time"></img>
-        <p>${cookTime}</p>
-        `;
-    //TODO: Add recipe tag to card
+    rating.innerHTML = "";
+    if(!cardData.isLocal) rating.innerHTML += `<span>${ratingValue}</span><img src="images\\${numStars}star.png" class = "rating"></img>`;
+    rating.innerHTML += `<img src="images\\time-logo.png" class = "time"></img><p>${cookTime}</p>`;
+
 
     //Add elements to recipe card
     cardArticle.appendChild(thumbnailImg);

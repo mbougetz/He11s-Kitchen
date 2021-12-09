@@ -142,7 +142,7 @@ class Card extends HTMLElement {
     //TEMP VAL; number of stars to display
     rating.innerHTML = "";
     if (!cardData.isLocal)
-      rating.innerHTML += `<span>${ratingValue}</span><img src="images\\${numStars}star.png" class = "rating"></img>`;
+      rating.innerHTML += `<span>${ratingValue}</span><img src="images\\white-${numStars}star.png" class = "rating"></img>`;
     rating.innerHTML += `<img src="images\\time-logo.png" class = "time"></img><p>${cookTime}</p>`;
 
     //Add elements to recipe card

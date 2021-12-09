@@ -6,7 +6,6 @@ class Card extends HTMLElement {
 
   set data(cardData) {
     if (!cardData) return; //Exit function if data DNE
-
     this.json = cardData;
 
     const cardStyle = document.createElement("style");

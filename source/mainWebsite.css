@@ -561,6 +561,16 @@ footer {
   align-items: center;
 }
 
+footer a {
+  text-decoration: none;
+  color: #d1c087;
+}
+
+footer a:hover {
+  color: #f5f2e9;
+  cursor: pointer;
+}
+
 #github {
   display: flex;
   align-items: center;

@@ -260,17 +260,17 @@ class RecipeExpand extends HTMLElement {
     if (!cardData.isLocal) description.appendChild(summary);
 
     const favIcon = document.createElement("img");
-    favIcon.src = "./images/white-favoriteStar.png";
+    favIcon.src = "./images/grey-favoriteStar.png";
     favIcon.style = "float: left";
     favIcon.id = "star-img";
     const favBut = document.createElement("p");
     var stored = false;
     favBut.innerText = "Favorite"; //Add to favorite button
     const fav = document.createElement("div");
-    fav.addEventListener('click', (e) => {
-        favIcon.classList.toggle('star-light-up');
-        stored = true;
-    })
+    fav.addEventListener("click", (e) => {
+      favIcon.classList.toggle("star-light-up");
+      stored = true;
+    });
     fav.classList.add("fav-exp");
     fav.appendChild(favIcon);
     fav.appendChild(favBut);

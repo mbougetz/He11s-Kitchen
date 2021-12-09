@@ -105,7 +105,7 @@ class RecipeExpand extends HTMLElement {
         
         /* the rating star img */
         #starRate{
-            height: 25px;
+            height: 20px;
             width: 100px;
             vertical-align: inherit;
         }
@@ -231,7 +231,7 @@ class RecipeExpand extends HTMLElement {
     if (cardData.spoonacularScore)
       numStars = Math.round(cardData.spoonacularScore / 20);
 
-    rating.innerHTML = `Rating: <img src="./images/${numStars}star.png" id="starRate">`;
+    rating.innerHTML = `Rating: <img src="./images/grey-${numStars}star.png" id="starRate">`;
     const allergens = document.createElement("li");
 
     var allergensList = "Allergens: ";

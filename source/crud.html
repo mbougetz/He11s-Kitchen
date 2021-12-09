@@ -101,25 +101,36 @@
     
             <form id="addRecipeDialog" method="POST">
                 <h2> ENTER RECIPE DETAILS</h2>
-                <label> Upload Recipe Thumbnail</label>
-                <input type="file" id="uploadFile" accept=".png, .jpg">
+                <!--<label> Upload Recipe Thumbnail</label>
+                <input type="file" id="uploadFile" accept=".png, .jpg">--?
                 <label> Name </label>
                 <input type="text" id="name" placeholder="Your Name">
-                <br>
+                <br>-->
                 <label> Recipe Title </label>
                 <input type="text" id="recipeTitle" class="title" placeholder="Recipe Title">
                 <br>
+
                 <label>Ingredients </label> 
-                <textarea id="ingredients" class="ingredients"> </textarea>
+
+                <section class = "ingredientInputWrapper" id = "ingredientInputWrapper">
+                  <!--<textarea id="ingredients" class="ingredients"> </textarea>-->
+                  <textarea id="ingredientInputField" class="ingredientInput" placeholder="Add Ingredient #1:"> </textarea>
+
+                </section>
+                <button type="button" id="addIngredient"> Add Ingredient </button>
+                <button type="button" id="delIngredient"> Remove Ingredient </button>
                 <br> 
+
                 <label>Time </label> 
                 <input type="text" id="time" class="time" placeholder="Time the recipe takes to prepare and cook">
                 <br> 
-                <label>Tags </label> 
+                <!--<label>Tags </label> 
                 <input type="text" id="tag" class="recipeTag" placeholder="Add any tags or keywords for this recipe">
-                <br> 
+                <br> -->
                 <label> Recipe Instructions </label> 
+                <section class="instructionInputWrapper">
                 <textarea id="instructions"> </textarea>
+                </section>
                 <br> 
 
                 <section class="crudButtons"> 

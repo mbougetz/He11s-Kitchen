@@ -61,5 +61,5 @@ body {
 
 .lunch-hero-module-wrapper:hover {
   opacity: 0.9;
-  transition: 0.4s;
+  transition: 0.4s; 
 }

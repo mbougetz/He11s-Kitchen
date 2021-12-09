@@ -3,33 +3,30 @@ import { Router } from "./Router.js";
 const recipes = []; // instead of using json files, we want recipes from the API
 const recipeData = {}; // used to access the recipe data from Spoonacular
 
-//router
-const router = new Router();
+const numSearchResults = 12; //Number of query results retrieved at a time
+const recipesDisplayed = 3; //Max number of recipes displayed at a time per carousel
+
+const router = new Router(function () {
+  document.querySelector(".section-recipes-expand").classList.remove("seen");
+  document.querySelector(".section-recipes-display").classList.add("seen");
+  document.querySelector(".featured").classList.add("seen");
+  history.pushState(
+    { page: "home" },
+    "",
+    window.location.origin + window.location.pathname
+  );
+});
 
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
+  document.querySelector(".section-recipes-expand").classList.add("seen");
   console.log("initiating");
-
-  /*
-  try {
-    await fetchRecipes();
-  } catch (err) {
-    console.log(`Error fetching recipes: ${err}`);
-    return;
-  }
-  */
-  /*
-  let params = 'query=pasta&maxFat=25&nuber=2';
-  await fetchParams(params).then(function(res){
-   const fetchedRecipes = res.results;
-   for (let i = 0; i < fetchedRecipes.length; i++) {
-     recipeData[fetchedRecipes[i].title] = fetchedRecipes[i].id;
-   }
-  })*/
 
   //Initialize localStorage for use
   initLocalStorage();
+
+  initEditMode();
 
   //Bind search events to search bar
   bindSubPages();
@@ -38,7 +35,10 @@ async function init() {
   bindSearchBars();
 
   //Display homepage by default
-  homeCarousels(6);
+  homeCarousels(numSearchResults);
+
+  bindEsc();
+  router.onPopstate();
 }
 
 //If no recipes have been stored, creates an array to store them in
@@ -49,9 +49,15 @@ function initLocalStorage() {
   }
 }
 
+function initEditMode() {
+  if (!localStorage.getItem("inEditMode")) {
+    localStorage.setItem("inEditMode", JSON.stringify(false));
+  }
+}
+
 function bindSubPages() {
   document.getElementById("homePage").addEventListener("click", function () {
-    homeCarousels(6);
+    homeCarousels(numSearchResults);
 
     //remove any subpage hero sections
     if (document.querySelector(".breakfast-hero")) {
@@ -75,7 +81,7 @@ function bindSubPages() {
   document
     .getElementById("breakfastPage")
     .addEventListener("click", function () {
-      breakfastCarousels(6);
+      breakfastCarousels(numSearchResults);
       //remove main website sections
       //if these sections have the class "seen", then remove. if not dont do anything
       document.querySelector(".hero").classList.remove("seen");
@@ -99,7 +105,7 @@ function bindSubPages() {
     });
 
   document.getElementById("lunchPage").addEventListener("click", function () {
-    lunchCarousels(6);
+    lunchCarousels(numSearchResults);
     //remove main website sections
     //if these sections have the class "seen", then remove. if not dont do anything
     document.querySelector(".hero").classList.remove("seen");
@@ -122,7 +128,7 @@ function bindSubPages() {
   });
 
   document.getElementById("dinnerPage").addEventListener("click", function () {
-    dinnerCarousels(6);
+    dinnerCarousels(numSearchResults);
     //remove main website sections
     document.querySelector(".hero").classList.remove("seen");
     document.querySelector(".featured").classList.remove("seen");
@@ -143,7 +149,7 @@ function bindSubPages() {
   });
 
   document.getElementById("dessertPage").addEventListener("click", function () {
-    dessertCarousels(6);
+    dessertCarousels(numSearchResults);
     //remove main website sections
     document.querySelector(".hero").classList.remove("seen");
     document.querySelector(".featured").classList.remove("seen");
@@ -185,6 +191,7 @@ function bindSearchBars() {
   document
     .getElementById("topSearchButton")
     .addEventListener("click", function () {
+      console.log(document.getElementById("topSearch").value);
       searchCarousels(false);
     });
 
@@ -197,26 +204,41 @@ function bindSearchBars() {
       }
     });
 
-  document
-    .getElementById("heroSearchButton")
-    .addEventListener("click", function () {
-      searchCarousels(true);
-    });
-
-  document
-    .getElementById("heroSearch")
-    .addEventListener("keyup", function (event) {
+  let allHeroSearchBars = document.querySelectorAll('[id="heroSearchBar"]');
+  for (let i = 0; i < allHeroSearchBars.length; i++) {
+    allHeroSearchBars[i].addEventListener("keyup", function (event) {
       event.preventDefault();
       if (event.key === "Enter") {
-        document.getElementById("heroSearchButton").click();
+        document
+          .getElementById("topSearch")
+          .setAttribute("value", allHeroSearchBars[i].value);
+        document.getElementById("topSearchButton").click();
       }
     });
+  }
+
+  let allHeroSearchButtons = document.querySelectorAll(
+    '[id="heroSearchButton"]'
+  );
+  for (let i = 0; i < allHeroSearchButtons.length; i++) {
+    allHeroSearchButtons[i].addEventListener("click", function (event) {
+      event.preventDefault(); //Test
+      document
+        .getElementById("topSearch")
+        .setAttribute("value", allHeroSearchBars[i].value);
+
+      document.getElementById("topSearchButton").click();
+    });
+  }
 }
 
 //Deletes all currently displayed carousels from the page
 function clearCarousels() {
   //First clear recipe-wrapper
-  var currCarousels = document.querySelectorAll("card-carousel");
+  var currCarousels = document.querySelectorAll("[class=carousel]");
+
+  document.querySelector(".section-recipes-expand").classList.remove("seen");
+  document.querySelector(".section-recipes-display").classList.add("seen");
 
   if (currCarousels) {
     for (let i = 0; i < currCarousels.length; i++) {
@@ -230,9 +252,6 @@ function clearCarousels() {
       currCarouselTitles[i].remove();
     }
   }
-
-  //Resets carouselNum
-  carouselNum = 0;
 }
 
 //The specific carousels to load on the home page
@@ -241,83 +260,29 @@ async function homeCarousels(numResults) {
 
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-  if (localRecipes && localRecipes.length != 0) loadLocalRecipes();
-  else await addCarouselsToPage("pasta", numResults, "Top Results for Pasta");
+  console.log(localRecipes);
+  if (localRecipes && localRecipes.length != 0 && localRecipes[0] != "{}")
+    newLoadLocalRecipes();
+  else
+    await createCarousel(
+      "sandwich",
+      numResults,
+      "Top Sandwich Recipes",
+      recipesDisplayed
+    );
 
-  await addCarouselsToPage("burger", numResults, "Top Burger Recipes");
-  await addCarouselsToPage(
-    "thanksgiving",
+  await createCarousel(
+    "burger",
     numResults,
-    "Top Thanksgiving Recipes"
+    "Top Burger Recipes",
+    recipesDisplayed
   );
-}
-
-//Loads the locally stored recipes and adds to carousel and then appends carousel to page
-function loadLocalRecipes() {
-  //Retrieve the array of local recipes from localstorage
-  let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-
-  let stringifiedRecipies = [];
-
-  //Parse each stored recipe from json format back into js-useable data
-  //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
-  for (let i = 0; i < localRecipes.length; i++) {
-    //stringifiedRecipies[i] = JSON.parse(localRecipes[i]).json;
-    stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
-  }
-
-  //Create an empty carousel
-  let newCarousel = document.createElement("card-carousel");
-
-  //Create an array of all recipe data
-  let newCardsArray = [];
-  for (let i = 0; i < stringifiedRecipies.length; i++) {
-    let newCard = document.createElement("recipe-card");
-    newCard.data = stringifiedRecipies[i].data;
-    newCardsArray[i] = newCard;
-    bindRecipeExpand(newCard, function () {
-      fetchById(newCard.data.id).then(function (res) {
-        document.querySelector(".section-recipes-expand").classList.add("seen");
-        document
-          .querySelector(".section-recipes-display")
-          .classList.remove("seen");
-        document.querySelector("recipe-expand").data = res;
-      });
-    });
-  }
-
-  //Add all recipe cards to the carousel
-  newCarousel.createCardCarousel(newCardsArray);
-
-  //Create banner message for new carousel
-  let cardTitle = document.createElement("h2");
-  cardTitle.innerText = "Locally Created Recipes";
-  cardTitle.setAttribute("id", "carousel-title");
-  cardTitle.innerHTML =
-    cardTitle.innerText + '<i class="fa fa-long-arrow-right"></i>';
-  document
-    .querySelectorAll(".recipes-wrapper")
-    [carouselNum].appendChild(cardTitle);
-
-  //Appends the newly created and populated carousel to the class recipes-wrapper in the document
-  document
-    .querySelectorAll(".recipes-wrapper")
-    [carouselNum].appendChild(newCarousel);
-
-  //Bind the back and forwards buttons to the carousel
-  document
-    .querySelectorAll(".back")
-    [carouselNum].addEventListener("click", () => {
-      newCarousel.prevCards();
-    });
-
-  document
-    .querySelectorAll(".forward")
-    [carouselNum].addEventListener("click", () => {
-      newCarousel.nextCards();
-    });
-
-  carouselNum++;
+  await createCarousel(
+    "pasta",
+    numResults,
+    "Top Pasta Recipes",
+    recipesDisplayed
+  );
 }
 
 //The specific carousels to load on the breakfast page
@@ -326,14 +291,19 @@ async function breakfastCarousels(numResults) {
 
   //load carousel of local recipes
 
-  await addCarouselsToPage("breakfast", numResults, "Top Breakfast Recipes");
-  await addCarouselsToPage("pancake", numResults, "Best Pancakes Around");
-  await addCarouselsToPage(
+  await createCarousel(
     "breakfast",
     numResults,
-    "Vegan Breakfast Options",
-    "vegan"
+    "Top Breakfast Recipes",
+    recipesDisplayed
   );
+  await createCarousel(
+    "pancakes",
+    numResults,
+    "Best Pancakes Around",
+    recipesDisplayed
+  );
+  await createCarousel("eggs", numResults, "Top Egg Recipes", recipesDisplayed);
 }
 
 //The specific carousels to load on the lunch page
@@ -342,9 +312,19 @@ async function lunchCarousels(numResults) {
 
   //load carousel of local recipes
 
-  await addCarouselsToPage("lunch", numResults, "Top Lunch Recipes");
-  await addCarouselsToPage("sandwich", numResults, "Our Best Sandwiches");
-  await addCarouselsToPage("lunch", numResults, "A Vegan Lunch", "vegan");
+  await createCarousel(
+    "lunch",
+    numResults,
+    "Top Lunch Recipes",
+    recipesDisplayed
+  );
+  await createCarousel(
+    "sandwich",
+    numResults,
+    "Our Best Sandwiches",
+    recipesDisplayed
+  );
+  await createCarousel("salad", numResults, "Leafy Greens", recipesDisplayed);
 }
 
 //The specific carousels to load on the dinner page
@@ -353,13 +333,23 @@ async function dinnerCarousels(numResults) {
 
   //load carousel of local recipes
 
-  await addCarouselsToPage("dinner", numResults, "Top Dinner Recipes");
-  await addCarouselsToPage("pasta", numResults, "Top Pasta Recipes");
-  await addCarouselsToPage(
+  await createCarousel(
     "dinner",
     numResults,
-    "Vegan Dinner Options",
-    "vegan"
+    "Top Dinner Recipes",
+    recipesDisplayed
+  );
+  await createCarousel(
+    "pasta",
+    numResults,
+    "Top Pasta Recipes",
+    recipesDisplayed
+  );
+  await createCarousel(
+    "noodles",
+    numResults,
+    "Delicious Noodles",
+    recipesDisplayed
   );
 }
 
@@ -369,13 +359,23 @@ async function dessertCarousels(numResults) {
 
   //load carousel of local recipes
 
-  await addCarouselsToPage("dessert", numResults, "Top Dessert Recipes");
-  await addCarouselsToPage("ice cream", numResults, "The Best of Ice Cream");
-  await addCarouselsToPage(
+  await createCarousel(
     "dessert",
     numResults,
-    "Vegan Dessert Options",
-    "vegan"
+    "Top Dessert Recipes",
+    recipesDisplayed
+  );
+  await createCarousel(
+    "ice cream",
+    numResults,
+    "The Best of Ice Cream",
+    recipesDisplayed
+  );
+  await createCarousel(
+    "cookies",
+    numResults,
+    "Amazing Cookies",
+    recipesDisplayed
   );
 }
 
@@ -383,194 +383,249 @@ async function dessertCarousels(numResults) {
 //Param: searchingFromHero is true if search is clicked from the hero search bar, false if from the top search bar
 async function searchCarousels(searchingFromHero) {
   clearCarousels();
+  document.querySelector(".featured").classList.remove("seen");
 
   let query = "";
 
   if (!searchingFromHero) query = document.getElementById("topSearch").value;
-  else query = document.getElementById("heroSearch").value;
+  else query = document.getElementById("heroSearchBar").value;
 
-  await addCarouselsToPage(query, 6, "Top Results");
-  await addCarouselsToPage(query, 6, "Vegetarian Options", "vegetarian");
-  await addCarouselsToPage(query, 6, "Vegan Options", "vegan");
+  await createCarousel(
+    query,
+    numSearchResults,
+    "Top Results",
+    recipesDisplayed
+  );
+  //await createCarousel(query, numSearchResults, "Vegetarian Options", recipesDisplayed);
+  //await createCarousel(query, numSearchResults, "Vegan Options", recipesDisplayed);
 }
 
-//Returns json data of resultant API search
-//query = search term i.e. "pasta", numResults = number of recipes to return from search results
-async function queryApi(query, numResults, diet) {
-  let response = "";
+/* @function the function creates a carousel and attach the carousel to the main page
+   @param input a filter word to select recipes for the carousel
+   @return return an array of recipes that contained in the carousel*/
+async function createCarousel(selector, numRecipes, title, numRecipesShown) {
+  if (!numRecipes) numRecipes = numSearchResults;
+  if (!numRecipesShown) numRecipesShown = 5;
 
-  if (!diet) {
-    response = await fetch(
-      "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=" +
-        query +
-        "&number=" +
-        numResults,
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host":
-            "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-          "x-rapidapi-key":
-            "e26569aaabmsh3816991676f73b4p175a23jsn09f144d9bffb",
-        },
+  //used to store fetched recipe that stored in local base
+  const localRecipe = [];
+  await fetchParams(
+    `query=${selector}&addRecipeNutrition=true&number=${numRecipes}`
+  ).then(function (res) {
+    const carousel = document.createElement("div");
+    // set the div's carousel
+    carousel.setAttribute("class", "carousel");
+
+    //Create banner message for new carousel
+    if (title) {
+      let cardTitle = document.createElement("h2");
+      cardTitle.innerText = title;
+      cardTitle.setAttribute("id", "carousel-title");
+      cardTitle.innerHTML =
+        cardTitle.innerText + '<i class="fa fa-long-arrow-right"></i>';
+      document.querySelector(".recipes-wrapper").appendChild(cardTitle);
+    }
+
+    for (let i = 0; i < res.results.length; i++) {
+      recipeData[res.results[i].title] = res.results[i].id;
+      // create recipe card
+      let recipeCard = document.createElement("recipe-card");
+      recipeCard.data = res.results[i];
+      bindRecipeExpand(recipeCard, function () {
+        fetchById(recipeCard.data.id).then(function (res) {
+          recipeCard.data.isLocal = false; //Mark as not a local recipe
+          console.log(recipeCard.data);
+          document
+            .querySelector(".section-recipes-expand")
+            .classList.add("seen");
+          document
+            .querySelector(".section-recipes-display")
+            .classList.remove("seen");
+          document.querySelector(".featured").classList.remove("seen"); //test
+          document.querySelector("recipe-expand").data = res;
+        });
+      });
+
+      localRecipe[i] = recipeCard;
+
+      //Test
+      if (i < numRecipesShown) {
+        // show only three recipe in each carousel
+        carousel.appendChild(recipeCard);
       }
-    );
-  } else {
-    //alert("max time: " + maxTime);
-    response = await fetch(
-      "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=" +
-        query +
-        "&diet=" +
-        diet +
-        "&number=" +
-        numResults,
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host":
-            "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-          "x-rapidapi-key":
-            "e26569aaabmsh3816991676f73b4p175a23jsn09f144d9bffb",
-        },
-      }
-    );
+    }
+
+    // append showMore button to the carousel.
+    const showMore = document.createElement("a");
+    showMore.setAttribute("class", "forward");
+    showMore.innerHTML = "&#10095";
+    carousel.appendChild(showMore);
+    const showLess = document.createElement("a");
+    bindShowMore(showMore, carousel, localRecipe, numRecipesShown);
+    showLess.setAttribute("class", "back");
+    showLess.innerHTML = "&#10094";
+    carousel.prepend(showLess);
+    bindShowLess(showLess, carousel, localRecipe, numRecipesShown);
+    document.querySelector(".recipes-wrapper").appendChild(carousel);
+  });
+  return localRecipe;
+}
+
+function newLoadLocalRecipes() {
+  //Retrieve the array of local recipes from localstorage
+  let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
+  let stringifiedRecipies = [];
+
+  console.log(localRecipes);
+  console.log(localRecipes[0]);
+
+  //Parse each stored recipe from json format back into js-useable data
+  //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
+  for (let i = 0; i < localRecipes.length; i++) {
+    console.log(i);
+    console.log(localRecipes[i]);
+    console.log(JSON.parse(localRecipes[i]));
+    stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
   }
 
-  return response.json();
-}
-
-//Returns json data of recipe with id specified in parameter 'id'
-
-async function getRecipe(id) {
-  //Query API by specific recipe id
-  const response = await fetch(
-    "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" +
-      id +
-      "/information",
-    {
-      method: "GET",
-      headers: {
-        "x-rapidapi-host":
-          "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-        "x-rapidapi-key": "e26569aaabmsh3816991676f73b4p175a23jsn09f144d9bffb",
-      },
-    }
-  );
-
-  //Return data in json format
-  return response.json();
-}
-
-//Search API for numResults number of recipes matching the query parameter;
-//Returns an array of recipe ids matching the search parameters
-async function getRecipeList(query, numResults, maxTime) {
-  var recipeResults = [];
-
-  //Query api
-  await queryApi(query, numResults, maxTime).then((value) => {
-    //console.log(value.results);
-
-    //Parse json, put ids of returned recipes into recipeResults
-    for (let i = 0; i < numResults; i++) {
-      //TODO: error checking in case less than numResults results are actually returned
-      recipeResults[i] = value.results[i].id;
-    }
-
-    //console.log(recipeResults)
-  });
-
-  return recipeResults;
-}
-
-//Global variable keeping track of carousels
-var carouselNum = 0;
-//Create carousel, add to page
-async function addCarouselsToPage(searchQuery, numRecipes, title, diet) {
-  // Makes a new empty carousel
+  //Create an empty carousel
   let newCarousel = document.createElement("card-carousel");
 
-  //To be filled with all relevant recipe cards
-  var carouselCards = [];
+  const carousel = document.createElement("div");
+  // set the div's carousel
+  carousel.setAttribute("class", "carousel");
 
-  //Queries api, stores all recipe ids matching search parameters in recipeList, an array of ids
-  var recipeList;
-  await getRecipeList(searchQuery, numRecipes, diet).then((value) => {
-    recipeList = value;
-  });
+  //Create an array of all recipe data
+  let newCardsArray = [];
+  for (let i = 0; i < stringifiedRecipies.length; i++) {
+    let newCard = document.createElement("recipe-card");
+    if (stringifiedRecipies[i].data) newCard.data = stringifiedRecipies[i].data;
+    //AAAAAAAAAAAAAAAAAA
+    else newCard.data = stringifiedRecipies[i].json;
+    newCardsArray[i] = newCard;
 
-  //Caps maximum number of recipes in a carousel to prevent accidental excessive queries
-  const MAX_RECIPES_IN_CAROUSEL = 12;
-  for (let i = 0; i < recipeList.length && i < MAX_RECIPES_IN_CAROUSEL; i++) {
-    // Makes a new recipe card
-    const recipeCard = document.createElement("recipe-card");
+    console.log(newCard);
 
-    //Gets a recipe id from recipeList, queries the api for the recipe's data, stores the data in the card
-    await getRecipe(recipeList[i]).then((value) => {
-      //console.log(value);
-      recipeCard.data = value;
+    bindRecipeExpand(newCard, function () {
+      document.querySelector(".section-recipes-expand").classList.add("seen"); //swap add and remove
+      document
+        .querySelector(".section-recipes-display")
+        .classList.remove("seen");
+      document.querySelector(".featured").classList.remove("seen");
+      document.querySelector("recipe-expand").data = newCard.data;
     });
 
-    //Stores the card into the array carouselCards
-    carouselCards[i] = recipeCard;
+    if (i < recipesDisplayed) {
+      //Only load numRecipesShown per carousel
+      carousel.appendChild(newCard);
+    }
   }
 
-  //Inserts all the recipe cards in carouselCards into the carousel
-  newCarousel.createCardCarousel(carouselCards);
-  //console.log(carouselCards.length);
-
+  //Create banner message for new carousel
   let cardTitle = document.createElement("h2");
-  cardTitle.innerText = title;
+  cardTitle.innerText = "Locally Created Recipes";
   cardTitle.setAttribute("id", "carousel-title");
-  //alert(cardTitle.innerText + " vs " + title);
-  cardTitle.innerHTML = title + '<i class="fa fa-long-arrow-right"></i>';
-  document
-    .querySelectorAll(".recipes-wrapper")
-    [carouselNum].appendChild(cardTitle);
+  cardTitle.innerHTML =
+    cardTitle.innerText + '<i class="fa fa-long-arrow-right"></i>';
+  document.querySelector(".recipes-wrapper").appendChild(cardTitle);
 
-  //Appends the newly created and populated carousel to the class recipes-wrapper in the document
-  document
-    .querySelectorAll(".recipes-wrapper")
-    [carouselNum].appendChild(newCarousel);
-
-  //Binds the back and forward buttons to their respective carousel's functions
-
-  document
-    .querySelectorAll(".back")
-    [carouselNum].addEventListener("click", () => {
-      newCarousel.prevCards();
-    });
-
-  document
-    .querySelectorAll(".forward")
-    [carouselNum].addEventListener("click", () => {
-      newCarousel.nextCards();
-    });
-
-  carouselNum++;
-
-  //Return a reference to the carousel
-  return newCarousel;
+  // append showMore button to the carousel.
+  const showMore = document.createElement("a");
+  showMore.setAttribute("class", "forward");
+  showMore.innerHTML = "&#10095";
+  carousel.appendChild(showMore);
+  const showLess = document.createElement("a");
+  bindShowMore(showMore, carousel, newCardsArray, recipesDisplayed);
+  showLess.setAttribute("class", "back");
+  showLess.innerHTML = "&#10094";
+  carousel.prepend(showLess);
+  bindShowLess(showLess, carousel, newCardsArray, recipesDisplayed);
+  document.querySelector(".recipes-wrapper").appendChild(carousel);
 }
 
-/*load all recipes
-async function fetchRecipes() {
-  return new Promise((resolve, reject) => {
-    recipes.forEach(recipe => {
-      fetch(recipe)
-        // CHANGE: implement with API
-        .then(response => response.json())
-        .then(data => {
-          // This grabs the page name from the URL in the array above
-          data['page-name'] = recipe.split('/').pop().split('.')[0];
-          recipeData[recipe] = data;
-          if (Object.keys(recipeData).length == recipes.length) {
-            resolve();
-          }
-        })
-        .catch(err => {
-          console.log(`Error loading the ${recipe} recipe`);
-          reject(err);
-        });
-    });
+function bindRecipeExpand(recipeCard, recipeExpand) {
+  router.setExpand(recipeCard.data.id, recipeExpand);
+  recipeCard.addEventListener("click", (e) => {
+    router.navigate(recipeCard.data.id, false);
   });
-}*/
+}
+
+/* the function add an eventlistener to the showMore button in the carousel. By clicking the button, 3 more recipe will be shown. */
+function bindShowMore(btn, carousel, localRecipe, numRecipesInCarousel) {
+  if (!numRecipesInCarousel) numRecipesInCarousel = 5;
+
+  let curPtr = 0;
+  btn.addEventListener("click", async () => {
+    //check the index of current recipes
+    for (let i = 0; i < localRecipe.length / numRecipesInCarousel; i++) {
+      if (
+        carousel.querySelector("recipe-card").data.title ==
+        localRecipe[i * numRecipesInCarousel].data.title
+      ) {
+        //changed from 3
+        curPtr = (i + 1) * numRecipesInCarousel;
+        break;
+      }
+    }
+    // if current pointer is at the end of the array, there is no more recipe to be shown
+    if (curPtr >= localRecipe.length) {
+      //window.alert('no more recipe to show');
+      return;
+    }
+    for (let i = 0; i < numRecipesInCarousel; i++) {
+      carousel.removeChild(carousel.querySelector("recipe-card"));
+    }
+    for (let i = 0; i < numRecipesInCarousel; i++) {
+      if (i + curPtr >= localRecipe.length) {
+        break;
+      }
+      carousel.insertBefore(localRecipe[i + curPtr], btn);
+    }
+  });
+}
+
+/* the function bind an eventlistener to the prev button in the carousel. By clicking the button, previous 3 recipes will be shown */
+function bindShowLess(btn, carousel, localRecipe, numRecipesInCarousel) {
+  if (!numRecipesInCarousel) numRecipesInCarousel = 5;
+
+  let curPtr = 0;
+  btn.addEventListener("click", () => {
+    //check the index of current recipes
+    for (let i = 0; i < localRecipe.length / numRecipesInCarousel; i++) {
+      if (
+        carousel.querySelector("recipe-card").data.title ==
+        localRecipe[i * numRecipesInCarousel].data.title
+      ) {
+        curPtr = (i - 1) * numRecipesInCarousel;
+        break;
+      }
+    }
+    // if current pointer is at the end of the array, there is no more recipe to be shown
+    if (curPtr < 0) {
+      //window.alert('no more recipe to show');
+      return;
+    }
+
+    for (let i = 0; i < numRecipesInCarousel; i++) {
+      if (carousel.querySelector("recipe-card") == null) {
+        break;
+      }
+      carousel.removeChild(carousel.querySelector("recipe-card"));
+    }
+    for (let i = 0; i < numRecipesInCarousel; i++) {
+      if (localRecipe[i + curPtr])
+        carousel.insertBefore(
+          localRecipe[i + curPtr],
+          carousel.querySelector(".forward")
+        );
+    }
+  });
+}
+
+function bindEsc() {
+  document.addEventListener("keydown", (e) => {
+    if (e.key == "Escape") {
+      router.navigate("home", false);
+    }
+  });
+}

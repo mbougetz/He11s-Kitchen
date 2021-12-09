@@ -171,21 +171,6 @@ function bindSubPages() {
   });
 }
 
-function bindRecipeExpand(recipeCard, recipeExpand) {
-  router.setExpand(recipeCard.data.id, recipeExpand);
-  recipeCard.addEventListener("click", (e) => {
-    router.navigate(recipeCard.data.id);
-  });
-}
-
-function bindEsc() {
-  document.addEventListener("keydown", (e) => {
-    if (e.key == "Escape") {
-      router.navigate("home");
-    }
-  });
-}
-
 //Enable search functionality
 function bindSearchBars() {
   document

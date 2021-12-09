@@ -7,7 +7,7 @@ class Card extends HTMLElement {
   set data(cardData) {
     if (!cardData) return; //Exit function if data DNE
 
-    this.json = cardData; 
+    this.json = cardData;
 
     const cardStyle = document.createElement("style");
     const cardArticle = document.createElement("article");
@@ -51,6 +51,7 @@ class Card extends HTMLElement {
             font-size: 23px;
             margin-top: 0.3rem;
             margin-bottom: 0.3rem;
+            color: #4f1f27;
           }
           
           p.title:after {
@@ -123,29 +124,26 @@ class Card extends HTMLElement {
     //Recipe cook time
     let cookTime = cardData.readyInMinutes; //TEMP VAL; get from API
 
-    if(cookTime > 60){
-      let hours = Math.floor(cookTime/60);
-      let minutes = (cookTime - 60 * hours);
+    if (cookTime > 60) {
+      let hours = Math.floor(cookTime / 60);
+      let minutes = cookTime - 60 * hours;
 
-  
-      if(hours == 1) cookTime = hours + " hour and " + minutes + " minutes";
+      if (hours == 1) cookTime = hours + " hour and " + minutes + " minutes";
       else cookTime = hours + " hours and " + minutes + " minutes";
-
-
     } else cookTime += " minutes";
 
     //Recipe reviews
-    let ratingValue = 5; 
-    if(cardData.spoonacularScore) ratingValue = cardData.spoonacularScore/20;
+    let ratingValue = 5;
+    if (cardData.spoonacularScore) ratingValue = cardData.spoonacularScore / 20;
     var numStars = Math.round(ratingValue);
     const rating = document.createElement("div");
     rating.classList.add("rating-time");
 
     //TEMP VAL; number of stars to display
     rating.innerHTML = "";
-    if(!cardData.isLocal) rating.innerHTML += `<span>${ratingValue}</span><img src="images\\${numStars}star.png" class = "rating"></img>`;
+    if (!cardData.isLocal)
+      rating.innerHTML += `<span>${ratingValue}</span><img src="images\\${numStars}star.png" class = "rating"></img>`;
     rating.innerHTML += `<img src="images\\time-logo.png" class = "time"></img><p>${cookTime}</p>`;
-
 
     //Add elements to recipe card
     cardArticle.appendChild(thumbnailImg);

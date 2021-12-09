@@ -368,7 +368,6 @@ async function dessertCarousels(numResults) {
 //Param: searchingFromHero is true if search is clicked from the hero search bar, false if from the top search bar
 async function searchCarousels(searchingFromHero) {
   clearCarousels();
-  document.querySelector(".featured").classList.remove("seen");
 
   let query = "";
 
@@ -472,9 +471,6 @@ function newLoadLocalRecipes() {
     console.log(JSON.parse(localRecipes[i]));
     stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
   }
-
-  //Create an empty carousel
-  let newCarousel = document.createElement("card-carousel");
 
   const carousel = document.createElement("div");
   // set the div's carousel

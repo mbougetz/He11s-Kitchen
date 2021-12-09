@@ -179,6 +179,10 @@ class RecipeExpand extends HTMLElement {
             left: 10em;
             padding-left: 7.5em;
         }
+
+        .star-light-up {
+          
+        }
       `;
     const wrapper = document.createElement("section");
     wrapper.classList.add("wrapper-exp");
@@ -260,8 +264,13 @@ class RecipeExpand extends HTMLElement {
     favIcon.style = "float: left";
     favIcon.id = "star-img";
     const favBut = document.createElement("p");
+    var stored = false;
     favBut.innerText = "Favorite"; //Add to favorite button
     const fav = document.createElement("div");
+    fav.addEventListener('click', (e) => {
+        favIcon.classList.toggle('star-light-up');
+        stored = true;
+    })
     fav.classList.add("fav-exp");
     fav.appendChild(favIcon);
     fav.appendChild(favBut);
@@ -384,6 +393,10 @@ class RecipeExpand extends HTMLElement {
     const instructionTable = document.createElement("div");
     instructionTable.innerHTML = `<h2> Directions </h2>`;
     instructionTable.innerHTML += cardData.instructions;
+    // avoid showing null in the instruction section when the instructions is undefined
+    if (cardData.instructions == null) {
+      instructionTable.innerHTML = ``;
+    }
     tutorialDesc.appendChild(instructionTable);
     //#endregion
     //#region

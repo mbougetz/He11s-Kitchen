@@ -28,6 +28,15 @@ export class Router {
     this[page]();
   }
   
+  getUrl(page) {
+    if (page == 'home') {
+      return window.location.origin + window.location.pathname;
+    }
+    else {
+      return window.location.origin + window.location.pathname + '#' + page;
+    }
+  }
+
   onPopstate() {
     window.addEventListener('popstate', (e) => {
       this.navigate(e.state.page, true)

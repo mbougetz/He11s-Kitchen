@@ -256,7 +256,7 @@ class RecipeExpand extends HTMLElement {
     if (!cardData.isLocal) description.appendChild(summary);
 
     const favIcon = document.createElement("img");
-    favIcon.src = "./images/favoriteStar.png";
+    favIcon.src = "./images/white-favoriteStar.png";
     favIcon.style = "float: left";
     favIcon.id = "star-img";
     const favBut = document.createElement("p");

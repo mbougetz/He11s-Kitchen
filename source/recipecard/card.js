@@ -1,6 +1,6 @@
 class Card extends HTMLElement {
   constructor() {
-    super(); //Inherit from ancestor
+    super();
     this.attachShadow({ mode: "open" });
   }
 
@@ -11,7 +11,6 @@ class Card extends HTMLElement {
     const cardStyle = document.createElement("style");
     const cardArticle = document.createElement("article");
 
-    //For now this is literally just card.css in its entirety
     cardStyle.innerHTML = `
         .recipes-wrapper {
             display: grid;

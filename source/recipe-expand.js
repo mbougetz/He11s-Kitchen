@@ -268,10 +268,32 @@ class RecipeExpand extends HTMLElement {
     //check if current recipe is already inside the localstorage;
     var favorite = false;
     let local = JSON.parse(localStorage.getItem('localRecipes'));
+
+
     for (let i = 0; i < local.length; i++) {
-      if (local[i].json.id == cardData.id) {
-        favorite = true;
-      }
+      let stringLocal = JSON.parse(local[i]);
+      
+      if(stringLocal.json){
+        let oldID = "" + cardData.id;
+        let newID = oldID.split("");
+        newID[newID.length - 1] = '@';
+        let newIDString = newID.join("");
+
+        if (stringLocal.json.id == cardData.id || stringLocal.json.id == newIDString) {
+          favorite = true;
+        }
+
+      } else if(stringLocal.data){
+        let oldID = "" + stringLocal.data.id;
+        let newID = oldID.split("");
+        newID[newID.length - 1] = '@';
+        let newIDString = newID.join("");
+
+        if (stringLocal.data.id == cardData.id || stringLocal.data.id == newIDString) {
+          favorite = true;
+        }
+
+      } 
     }
     //set up the favorite icon accordingly
     favIcon.src = favorite == true ? "./images/yellow-favoriteStar.png" :
@@ -279,39 +301,13 @@ class RecipeExpand extends HTMLElement {
     favBut.innerText = "Favorite"; //Add to favorite button
     const fav = document.createElement("div");
     fav.addEventListener("click", (e) => {
-/*
-      favIcon.classList.toggle("star-light-up");
-      stored = true;
-
-      let newCard = document.createElement("recipe-card");
-      cardData.isLocal = true;
-      newCard.data = cardData;
-      newCard.data.isLocal = true;
-      
-      let prevID = "" + newCard.data.id;
-      let newID = prevID.split("");
-      newID[newID.length - 1] = '@';
-
-      newCard.data.id = newID.join("");
-
-      //newCard.data.id += "" + "00000";
-
-      let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-
-      localRecipes.push(JSON.stringify(newCard));
-
-      localStorage.setItem("localRecipes", JSON.stringify(localRecipes));
-
-
-
-      //exit expand view
-      location.reload();
-
-
-*/
       if (favorite) {
         local = local.filter((element) => {
-          return element.json.id != this.data.id;
+          
+          let newElement = JSON.parse(element);
+          if(newElement.json) return newElement.json.id != this.data.id;
+          else if (newElement.data) return newElement.data.id != this.data.id;
+          
         });
         localStorage.setItem("localRecipes", JSON.stringify(local));
         favIcon.src = "./images/grey-favoriteStar.png";
@@ -321,12 +317,22 @@ class RecipeExpand extends HTMLElement {
         let newCard = document.createElement("recipe-card");
         newCard.data = cardData;
         newCard.data.isLocal = true;
-        local.push(newCard);
+
+        let prevID = "" + newCard.data.id;
+        let newID = prevID.split("");
+        newID[newID.length - 1] = '@';
+        newCard.data.id = newID.join("");
+
+        local.push(JSON.stringify(newCard));
         localStorage.setItem("localRecipes", JSON.stringify(local));
         favIcon.src = "./images/yellow-favoriteStar.png";
         favorite = true;
-        console.log(JSON.parse(localStorage.getItem('localRecipes'))[0])
       }
+      
+      //exit expand view
+      location.reload();
+
+      //end
     });
     fav.classList.add("fav-exp");
     fav.appendChild(favIcon);
@@ -415,7 +421,8 @@ class RecipeExpand extends HTMLElement {
       buttonSection.appendChild(del);
     }
 
-    buttonSection.appendChild(fav);
+    //Only add favorite button if recipe wasn't user created
+    if (!cardData.originLocal)buttonSection.appendChild(fav); 
     recipeDesc.appendChild(buttonSection);
 
     //#endregion

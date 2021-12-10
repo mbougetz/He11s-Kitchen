@@ -59,3 +59,9 @@
   font-size: 1.1em;
   color: #3b3838;
 }
+
+@media screen and (max-width: 1000px) {
+  .featured-flex-item {
+    font-size: 13.5px;
+  }
+}

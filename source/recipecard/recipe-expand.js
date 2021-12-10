@@ -179,6 +179,13 @@ class RecipeExpand extends HTMLElement {
             left: 10em;
             padding-left: 7.5em;
         }
+        
+        @media screen and (max-width: 1000px) {
+          .recipe-desc-exp{
+            display: flex;
+            flex-direction: column;
+          }
+        }
 
         .star-light-up {
           

@@ -253,6 +253,8 @@ class RecipeExpand extends HTMLElement {
       summary.classList.add("list-element");
     }
 
+    console.log(cardData);
+
     description.appendChild(prepTime);
     description.appendChild(dietary);
     if (!cardData.isLocal) description.appendChild(rating);
@@ -270,10 +272,32 @@ class RecipeExpand extends HTMLElement {
     fav.addEventListener("click", (e) => {
       favIcon.classList.toggle("star-light-up");
       stored = true;
+
+      let newCard = document.createElement("recipe-card");
+      cardData.isLocal = true;
+      newCard.data = cardData;
+      //newCard.setAttribute("isLocal", true);
+      newCard.data.isLocal = true;
+      newCard.data.id += "" + "00000";
+
+      let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
+
+      localRecipes.push(JSON.stringify(newCard));
+
+      localStorage.setItem("localRecipes", JSON.stringify(localRecipes));
+
+
+
+      //exit expand view
+      location.reload();
+
+
     });
     fav.classList.add("fav-exp");
     fav.appendChild(favIcon);
     fav.appendChild(favBut);
+
+
 
     const editIcon = document.createElement("img");
     editIcon.src = "./images/recipe-edit.png";

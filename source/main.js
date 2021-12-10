@@ -243,9 +243,10 @@ function clearCarousels() {
 async function homeCarousels(numResults) {
   clearCarousels();
 
+  //localStorage.clear();
+
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-  console.log(localRecipes);
   if (localRecipes && localRecipes.length != 0 && localRecipes[0] != "{}")
     newLoadLocalRecipes();
   else
@@ -460,15 +461,10 @@ function newLoadLocalRecipes() {
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
   let stringifiedRecipies = [];
 
-  console.log(localRecipes);
-  console.log(localRecipes[0]);
 
   //Parse each stored recipe from json format back into js-useable data
   //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
   for (let i = 0; i < localRecipes.length; i++) {
-    console.log(i);
-    console.log(localRecipes[i]);
-    console.log(JSON.parse(localRecipes[i]));
     stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
   }
 
@@ -481,7 +477,6 @@ function newLoadLocalRecipes() {
   for (let i = 0; i < stringifiedRecipies.length; i++) {
     let newCard = document.createElement("recipe-card");
     if (stringifiedRecipies[i].data) newCard.data = stringifiedRecipies[i].data;
-    //AAAAAAAAAAAAAAAAAA
     else newCard.data = stringifiedRecipies[i].json;
     newCardsArray[i] = newCard;
 

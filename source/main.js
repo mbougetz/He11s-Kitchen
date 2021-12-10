@@ -368,21 +368,27 @@ async function dessertCarousels(numResults) {
 //Search spoonacular for the value currently in the search bar
 //Param: searchingFromHero is true if search is clicked from the hero search bar, false if from the top search bar
 async function searchCarousels(searchingFromHero) {
-  clearCarousels();
-
   let query = "";
 
   if (!searchingFromHero) query = document.getElementById("topSearch").value;
   else query = document.getElementById("heroSearchBar").value;
 
-  await createCarousel(
-    query,
-    numSearchResults,
-    "Top Results",
-    recipesDisplayed
-  );
   //await createCarousel(query, numSearchResults, "Vegetarian Options", recipesDisplayed);
   //await createCarousel(query, numSearchResults, "Vegan Options", recipesDisplayed);
+
+    router.setExpand("search#" + query, async function(){
+      clearCarousels();
+      await createCarousel(
+        query,
+        numSearchResults,
+        "Top Results",
+        recipesDisplayed
+      );
+
+    });
+
+    router.navigate("search#" + query, false);
+
 }
 
 /* @function the function creates a carousel and attach the carousel to the main page

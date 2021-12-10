@@ -116,8 +116,16 @@ function delOldRecipe(){
   //Get the index of the recipe in localstorage that needs to be removed
   let removeIndex = -1;
   for(let i = 0; i < stringifiedRecipies.length; i++){   
-    if(stringifiedRecipies[i].data) if(stringifiedRecipies[i].data.id == oldRecipeID) removeIndex = i;
-    else if(stringifiedRecipies[i].json) if(stringifiedRecipies[i].json.id == oldRecipeID) removeIndex = i;
+    
+    console.log(oldRecipeID);
+    if(stringifiedRecipies[i].data) {
+      //console.log(stringifiedRecipies[i].data.id);
+      if(stringifiedRecipies[i].data.id == oldRecipeID) removeIndex = i;
+    }
+    else if(stringifiedRecipies[i].json) {
+      //console.log(stringifiedRecipies[i].json.id);
+      if(stringifiedRecipies[i].json.id == oldRecipeID) removeIndex = i;
+    }
   }
 
   //Remove old recipe from array
@@ -138,7 +146,7 @@ function delOldRecipe(){
   //Push updated local recipe array back to localStorage
   localStorage.setItem("localRecipes", JSON.stringify(newLocalRecipeArr));
 
-  //alert("deleted old recipe with id: " + oldRecipeID);
+  alert("deleted old recipe with id: " + oldRecipeID);
 
 }
 
@@ -150,13 +158,16 @@ function fillInputFields(recipeData){
 
   let ingredients = recipeData.extendedIngredients;
 
+  console.log(recipeData.extendedIngredients);
+
   //Add the appropriate amount of ingredient boxes to page
   for(let i = 0; i < ingredients.length - 1; i++) document.getElementById("addIngredient").click();
 
   //Fill in each add ingredient input field with the relevant value from the retrieved recipe data
   let allIngInputs = document.getElementsByClassName ("ingredientInput");
   for(let i = 0; i < allIngInputs.length; i++){
-    allIngInputs[i].innerText = ingredients[i];
+    if(ingredients[i].originalString) allIngInputs[i].innerText = ingredients[i].originalString;
+    else allIngInputs[i].innerText = ingredients[i];
 
   }
 

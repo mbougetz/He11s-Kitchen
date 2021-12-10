@@ -44,6 +44,7 @@ class RecipeExpand extends HTMLElement {
         }
 
         .fav-exp p {
+            margin-block-start: 0.6em;
             margin-left: 10px;
             display: inline-block;
         }
@@ -220,9 +221,8 @@ class RecipeExpand extends HTMLElement {
     prepTime.innerText = `Prep time: ${time}`; //TODO: convert to "x hours y minutes" format if over 59 minutes
 
     const dietary = document.createElement("li");
-    dietary.innerText = `Dietary restrictions: ${
-      cardData.vegan == true ? "vegan" : "not vegan"
-    }`;
+    dietary.innerText = `Dietary restrictions: ${cardData.vegan == true ? "vegan" : "not vegan"
+      }`;
     dietary.classList.add("list-element");
     const rating = document.createElement("li");
     rating.classList.add("list-element");
@@ -262,36 +262,43 @@ class RecipeExpand extends HTMLElement {
     if (!cardData.isLocal) description.appendChild(summary);
 
     const favIcon = document.createElement("img");
-    favIcon.src = "./images/grey-favoriteStar.png";
+   
     favIcon.style = "float: left";
     favIcon.id = "star-img";
     const favBut = document.createElement("p");
-    var stored = false;
+
+    //check if current recipe is already inside the localstorage;
+    var favorite = false;
+    let local = JSON.parse(localStorage.getItem('localRecipes'));
+    for (let i = 0; i < local.length; i++) {
+      if (local[i].json.id == cardData.id) {
+        favorite = true;
+      }
+    }
+    //set up the favorite icon accordingly
+    favIcon.src = favorite == true ? "./images/yellow-favoriteStar.png" :
+     "./images/grey-favoriteStar.png";
     favBut.innerText = "Favorite"; //Add to favorite button
     const fav = document.createElement("div");
     fav.addEventListener("click", (e) => {
-      favIcon.classList.toggle("star-light-up");
-      stored = true;
-
-      let newCard = document.createElement("recipe-card");
-      cardData.isLocal = true;
-      newCard.data = cardData;
-      //newCard.setAttribute("isLocal", true);
-      newCard.data.isLocal = true;
-      newCard.data.id += "" + "00000";
-
-      let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-
-      localRecipes.push(JSON.stringify(newCard));
-
-      localStorage.setItem("localRecipes", JSON.stringify(localRecipes));
-
-
-
-      //exit expand view
-      location.reload();
-
-
+      if (favorite) {
+        local = local.filter((element) => {
+          return element.json.id != this.data.id;
+        });
+        localStorage.setItem("localRecipes", JSON.stringify(local));
+        favIcon.src = "./images/grey-favoriteStar.png";
+        favorite = false;
+      }
+      else {
+        let newCard = document.createElement("recipe-card");
+        newCard.data = cardData;
+        newCard.data.isLocal = true;
+        local.push(newCard);
+        localStorage.setItem("localRecipes", JSON.stringify(local));
+        favIcon.src = "./images/yellow-favoriteStar.png";
+        favorite = true;
+        console.log(JSON.parse(localStorage.getItem('localRecipes'))[0])
+      }
     });
     fav.classList.add("fav-exp");
     fav.appendChild(favIcon);

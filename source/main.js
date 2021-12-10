@@ -49,6 +49,7 @@ async function init() {
 
 //If no recipes have been stored, creates an array to store them in
 function initLocalStorage() {
+  localStorage.clear();
   if (!localStorage.getItem("localRecipes")) {
     let emptyArr = [];
     localStorage.setItem("localRecipes", JSON.stringify(emptyArr));

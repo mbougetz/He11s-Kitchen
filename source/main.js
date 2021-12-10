@@ -20,6 +20,7 @@ const router = new Router(function () {
 
 window.addEventListener("DOMContentLoaded", init);
 
+//On page load
 async function init() {
   document.querySelector(".section-recipes-expand").classList.add("seen");
   console.log("initiating");
@@ -176,12 +177,11 @@ function bindSubPages() {
   });
 }
 
-//Enable search functionality
+//Bind search functionality to the search bars/buttons
 function bindSearchBars() {
   document
     .getElementById("topSearchButton")
     .addEventListener("click", function () {
-      console.log(document.getElementById("topSearch").value);
       searchCarousels(false);
     });
 
@@ -244,15 +244,9 @@ function clearCarousels() {
   }
 }
 
+//Fill the featured recipe element on the home page with retrieved data
 async function populateFeaturedRecipe(recipeID){
   await fetchById(recipeID).then(function(res){
-    console.log(res);
-
-    console.log(res.title);
-  
-
-  
-
 
     let featImgWrapper = document.getElementsByClassName("featured-flex-item");
     let featImg = document.createElement("img");
@@ -274,9 +268,8 @@ async function populateFeaturedRecipe(recipeID){
     featTextWrapper[0].appendChild(featBreak);
     featTextWrapper[0].appendChild(featDesc);
 
-    
-
-
+    //Bind the click function of the featured section to act identically
+    //To the click function for recipe cards
     let recipeCard = document.createElement("recipe-card");
     recipeCard.data = res;
     bindRecipeExpand(recipeCard, function () {
@@ -295,7 +288,6 @@ async function populateFeaturedRecipe(recipeID){
 
 
     document.getElementsByClassName("featured-flex-container")[0].addEventListener("click", function(){
-
       recipeCard.click();
 
     });
@@ -308,7 +300,6 @@ async function populateFeaturedRecipe(recipeID){
 async function homeCarousels(numResults) {
   clearCarousels();
 
-  //localStorage.clear();
 
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
@@ -438,14 +429,11 @@ async function searchCarousels(searchingFromHero) {
   if (!searchingFromHero) query = document.getElementById("topSearch").value;
   else query = document.getElementById("heroSearchBar").value;
 
-  //await createCarousel(query, numSearchResults, "Vegetarian Options", recipesDisplayed);
-  //await createCarousel(query, numSearchResults, "Vegan Options", recipesDisplayed);
-
     router.setExpand("search#" + query, async function(){
       clearCarousels();
       await createCarousel(
         query,
-        numSearchResults,
+        numSearchResults * 3,
         "Top Results",
         recipesDisplayed
       );
@@ -490,7 +478,6 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
       bindRecipeExpand(recipeCard, function () {
         fetchById(recipeCard.data.id).then(function (res) {
           recipeCard.data.isLocal = false; //Mark as not a local recipe
-          console.log(recipeCard.data);
           document
             .querySelector(".section-recipes-expand")
             .classList.add("seen");
@@ -504,11 +491,9 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
 
       localRecipe[i] = recipeCard;
 
-      //Test
-      if (i < numRecipesShown) {
-        // show only three recipe in each carousel
-        carousel.appendChild(recipeCard);
-      }
+      //Ensure the correct amount of cards per carousel display
+      if (i < numRecipesShown) carousel.appendChild(recipeCard);
+      
     }
 
     // append showMore button to the carousel.
@@ -550,8 +535,6 @@ function newLoadLocalRecipes() {
     if (stringifiedRecipies[i].data) newCard.data = stringifiedRecipies[i].data;
     else newCard.data = stringifiedRecipies[i].json;
     newCardsArray[i] = newCard;
-
-    console.log(newCard);
 
     bindRecipeExpand(newCard, function () {
       document.querySelector(".section-recipes-expand").classList.add("seen"); //swap add and remove

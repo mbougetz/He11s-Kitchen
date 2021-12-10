@@ -13,18 +13,13 @@ function init() {
         redirectToCRUD();
       });
 
-  //Super janky way of detecting the page source has been changed to crud.html
+  //If the page source has been changed to crud.html
   if (
     !document.getElementById("addRecipeBtn") &&
     document.getElementById("add")
   )
     crudPageInit();
 
-  /**  document.getElementById("cancel").addEventListener("click", cancelRecipe);
-  document.getElementById("edit").addEventListener("click", updateRecipe);
-  document
-    .getElementById("cancelEdit")
-    .addEventListener("click", cancelEditRecipe); */
 }
 
 
@@ -81,6 +76,7 @@ function crudPageInit() {
     }
   });
 
+  //Load in preexisting recpe data if redirected here after clicking edit recipe
   if(JSON.parse(localStorage.getItem("inEditMode"))) enterEditMode();
   
 
@@ -95,11 +91,13 @@ function enterEditMode(){
 
   oldRecipeID = recipeData.id;
 
+  //Populate input dialogs with old recipe data
   fillInputFields(recipeData);
 
 
 }
 
+//Remove old recipe data from localstorage once updated
 function delOldRecipe(){
   deleteOldRecipe = false;
   //Retrieve the array of local recipes from localstorage
@@ -154,8 +152,6 @@ function fillInputFields(recipeData){
   document.getElementById("instructions").innerText = recipeData.instructions;
 
   let ingredients = recipeData.extendedIngredients;
-
-  console.log(recipeData.extendedIngredients);
 
   //Add the appropriate amount of ingredient boxes to page
   for(let i = 0; i < ingredients.length - 1; i++) document.getElementById("addIngredient").click();

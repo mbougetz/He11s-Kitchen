@@ -217,7 +217,7 @@ class RecipeExpand extends HTMLElement {
       else time = hours + " hours and " + minutes + " minutes";
     } else time += " minutes";
 
-    prepTime.innerText = `Prep time: ${time}`; //TODO: convert to "x hours y minutes" format if over 59 minutes
+    prepTime.innerText = `Prep time: ${time}`; 
 
     const dietary = document.createElement("li");
     dietary.innerText = `Dietary restrictions: ${
@@ -253,8 +253,6 @@ class RecipeExpand extends HTMLElement {
       summary.classList.add("list-element");
     }
 
-    console.log(cardData);
-
     description.appendChild(prepTime);
     description.appendChild(dietary);
     if (!cardData.isLocal) description.appendChild(rating);
@@ -276,9 +274,15 @@ class RecipeExpand extends HTMLElement {
       let newCard = document.createElement("recipe-card");
       cardData.isLocal = true;
       newCard.data = cardData;
-      //newCard.setAttribute("isLocal", true);
       newCard.data.isLocal = true;
-      newCard.data.id += "" + "00000";
+      
+      let prevID = "" + newCard.data.id;
+      let newID = prevID.split("");
+      newID[newID.length - 1] = '@';
+
+      newCard.data.id = newID.join("");
+
+      //newCard.data.id += "" + "00000";
 
       let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
 
@@ -340,33 +344,26 @@ class RecipeExpand extends HTMLElement {
       let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
       let stringifiedRecipies = [];
 
-      console.log(localRecipes);
-
       //Parse each stored recipe from json format back into js-useable data
       //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
       for (let i = 0; i < localRecipes.length; i++) {
         stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
-        console.log(stringifiedRecipies[i]);
-        console.log(localRecipes[i]);
-      }
 
-      console.log(stringifiedRecipies);
+      }
 
       //Get the index of the old recipe data to remove in the locally stored array
       let removeIndex = -1;
       for (let i = 0; i < stringifiedRecipies.length; i++) {
-        console.log(stringifiedRecipies[i]);
         if (stringifiedRecipies[i].data) {
           if (stringifiedRecipies[i].data.id == cardData.id) removeIndex = i;
-          console.log(stringifiedRecipies[i].data.id);
+
         } else if (stringifiedRecipies[i].json) {
           if (stringifiedRecipies[i].json.id == cardData.id) removeIndex = i;
-          console.log(stringifiedRecipies[i].json.id);
+
         }
       }
 
       //Remove old recipe from array
-      //if(removeIndex != -1)stringifiedRecipies.splice(removeIndex, 1);
       if (removeIndex != -1) localRecipes.splice(removeIndex, 1);
       if (removeIndex == -1) alert("ID not found! Expected ID: " + cardData.id);
 
@@ -447,12 +444,7 @@ class RecipeExpand extends HTMLElement {
     wrapper.appendChild(recipeDesc);
     wrapper.appendChild(ingredientDesc);
     wrapper.appendChild(tutorialDesc);
-    //if(cardData.nutrition && cardData.nutrition.nutrients) wrapper.appendChild(nutrientDesc);
     wrapper.appendChild(nutrientDesc);
-
-    // const description = document.createElement('div');
-    // description.setAttribute('class', 'descriptionBox description');
-    // description.innerHTML = cardData.summary;
 
     article.appendChild(wrapper);
   }

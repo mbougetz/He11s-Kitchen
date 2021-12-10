@@ -22,7 +22,6 @@ export class Router {
     }
     if (statePopped == false && window.location.hash != hash) {
       history.pushState({page: page}, '', window.location.origin + window.location.pathname + hash);
-      console.log(window.location);
     }
 
     this[page]();

@@ -13,30 +13,25 @@ function init() {
         redirectToCRUD();
       });
 
-  //Super janky way of detecting the page source has been changed to crud.html
+  //If the page source has been changed to crud.html
   if (
     !document.getElementById("addRecipeBtn") &&
     document.getElementById("add")
   )
     crudPageInit();
 
-  /**  document.getElementById("cancel").addEventListener("click", cancelRecipe);
-  document.getElementById("edit").addEventListener("click", updateRecipe);
-  document
-    .getElementById("cancelEdit")
-    .addEventListener("click", cancelEditRecipe); */
 }
 
 
 
 //Changes page source to crud.html; reruns init function because of how js works.
 function redirectToCRUD() {
-  window.location.href = "crud.html";
+  window.location.href = "crud/crud.html";
 }
 
 //Change page source to editRecipe.html
 function redirectToEdit(){
-  window.location.href = "editRecipe.html";
+  window.location.href = "crud/editRecipe.html";
 }
 
 var numIngredient = 1;
@@ -81,6 +76,7 @@ function crudPageInit() {
     }
   });
 
+  //Load in preexisting recpe data if redirected here after clicking edit recipe
   if(JSON.parse(localStorage.getItem("inEditMode"))) enterEditMode();
   
 
@@ -95,11 +91,13 @@ function enterEditMode(){
 
   oldRecipeID = recipeData.id;
 
+  //Populate input dialogs with old recipe data
   fillInputFields(recipeData);
 
 
 }
 
+//Remove old recipe data from localstorage once updated
 function delOldRecipe(){
   deleteOldRecipe = false;
   //Retrieve the array of local recipes from localstorage
@@ -116,8 +114,15 @@ function delOldRecipe(){
   //Get the index of the recipe in localstorage that needs to be removed
   let removeIndex = -1;
   for(let i = 0; i < stringifiedRecipies.length; i++){   
-    if(stringifiedRecipies[i].data) if(stringifiedRecipies[i].data.id == oldRecipeID) removeIndex = i;
-    else if(stringifiedRecipies[i].json) if(stringifiedRecipies[i].json.id == oldRecipeID) removeIndex = i;
+    
+    if(stringifiedRecipies[i].data) {
+
+      if(stringifiedRecipies[i].data.id == oldRecipeID) removeIndex = i;
+    }
+    else if(stringifiedRecipies[i].json) {
+
+      if(stringifiedRecipies[i].json.id == oldRecipeID) removeIndex = i;
+    }
   }
 
   //Remove old recipe from array
@@ -138,8 +143,6 @@ function delOldRecipe(){
   //Push updated local recipe array back to localStorage
   localStorage.setItem("localRecipes", JSON.stringify(newLocalRecipeArr));
 
-  //alert("deleted old recipe with id: " + oldRecipeID);
-
 }
 
 //Enter the recipe data to edit into the crud input boxes
@@ -156,7 +159,8 @@ function fillInputFields(recipeData){
   //Fill in each add ingredient input field with the relevant value from the retrieved recipe data
   let allIngInputs = document.getElementsByClassName ("ingredientInput");
   for(let i = 0; i < allIngInputs.length; i++){
-    allIngInputs[i].innerText = ingredients[i];
+    if(ingredients[i].originalString) allIngInputs[i].innerText = ingredients[i].originalString;
+    else allIngInputs[i].innerText = ingredients[i];
 
   }
 
@@ -194,6 +198,7 @@ function addRecipe() {
     extendedIngredients: recipeIngredientArr,
     instructions: recipeInstructions, //used to be property directions
     isLocal: true, //Designates card created as being a local recipe, not one fetched from spoonacular
+    originLocal: true,
   };
 
   //Create a new recipe card, pass the data into it
@@ -219,6 +224,6 @@ function addRecipe() {
 
 function redirectToIndex() {
   deleteOldRecipe = false;
-  window.location.href = "index.html";
+  window.location.href = "/source/index.html";
 }
 

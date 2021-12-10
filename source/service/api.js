@@ -4,13 +4,6 @@ const apiKeys = ['69b4ef30e7ce4e04ab91a0610e9d634e','7ce41be0baa945d4a0b061b2c42
 
 export async function fetchById (id) {
   return new Promise((resolve, reject) => {
-    /*
-    fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${key}&includeNutrition=true`)
-    .then(function(res) {
-      resolve(res.json());
-    })
-    .catch((reason) => reject(reason));*/
-
 
     fetch(
       "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" +
@@ -32,13 +25,7 @@ export async function fetchById (id) {
 }
 export async function fetchParams (parameters) {
   return new Promise((resolve, reject) => {
-  /*fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${key}&${parameters}`)
-    .then(function(res) {
-      resolve(res.json());
-    })
-    .catch((reason) => reject(reason));*/
 
-    console.log(parameters);
     fetch(
       "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?&" + parameters,
       {

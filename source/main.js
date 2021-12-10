@@ -5,6 +5,7 @@ const recipeData = {}; // used to access the recipe data from Spoonacular
 
 const numSearchResults = 12; //Number of query results retrieved at a time
 const recipesDisplayed = 3; //Max number of recipes displayed at a time per carousel
+const featuredRecipeID = 608725; //Current featured recipe to display; set manually by a site maintainer
 
 const router = new Router(function () {
   document.querySelector(".section-recipes-expand").classList.remove("seen");
@@ -19,6 +20,7 @@ const router = new Router(function () {
 
 window.addEventListener("DOMContentLoaded", init);
 
+//On page load
 async function init() {
   document.querySelector(".section-recipes-expand").classList.add("seen");
   console.log("initiating");
@@ -26,7 +28,11 @@ async function init() {
   //Initialize localStorage for use
   initLocalStorage();
 
+  //Initialize variable keeping track of whether a recipe is to be edited
   initEditMode();
+
+  //Fill featured recipe on home page with recipe info
+  populateFeaturedRecipe(featuredRecipeID);
 
   //Bind search events to search bar
   bindSubPages();
@@ -47,6 +53,8 @@ function initLocalStorage() {
     let emptyArr = [];
     localStorage.setItem("localRecipes", JSON.stringify(emptyArr));
   }
+
+  //localStorage.clear();
 }
 
 function initEditMode() {
@@ -171,12 +179,11 @@ function bindSubPages() {
   });
 }
 
-//Enable search functionality
+//Bind search functionality to the search bars/buttons
 function bindSearchBars() {
   document
     .getElementById("topSearchButton")
     .addEventListener("click", function () {
-      console.log(document.getElementById("topSearch").value);
       searchCarousels(false);
     });
 
@@ -239,13 +246,66 @@ function clearCarousels() {
   }
 }
 
+//Fill the featured recipe element on the home page with retrieved data
+async function populateFeaturedRecipe(recipeID){
+  await fetchById(recipeID).then(function(res){
+
+    let featImgWrapper = document.getElementsByClassName("featured-flex-item");
+    let featImg = document.createElement("img");
+    featImg.setAttribute("src", res.image);
+    featImg.setAttribute("alt", "featured-recipe"
+    );
+    featImgWrapper[0].appendChild(featImg);
+
+    let featTextWrapper = document.getElementsByClassName("featured-flex-item featured-text");
+
+    let featTitle = document.createElement("h2");
+    featTitle.innerText = res.title;
+    let featBreak = document.createElement("br");
+    let featDesc = document.createElement("p");
+    featDesc.innerText = `Whip up this perfect ` + res.title + ` for ` + res.dishTypes[0] + `! It's 
+    surprisingly easy and oh so delicious with a prep time of only ` + res.readyInMinutes + ` minutes!`;
+
+    featTextWrapper[0].appendChild(featTitle);
+    featTextWrapper[0].appendChild(featBreak);
+    featTextWrapper[0].appendChild(featDesc);
+
+    //Bind the click function of the featured section to act identically
+    //To the click function for recipe cards
+    let recipeCard = document.createElement("recipe-card");
+    recipeCard.data = res;
+    bindRecipeExpand(recipeCard, function () {
+      fetchById(recipeID).then(function (res) {
+        recipeCard.data.isLocal = false; //Mark as not a local recipe
+        document
+          .querySelector(".section-recipes-expand")
+          .classList.add("seen");
+        document
+          .querySelector(".section-recipes-display")
+          .classList.remove("seen");
+        document.querySelector(".featured").classList.remove("seen"); //test
+        document.querySelector("recipe-expand").data = res;
+      });
+    });
+
+
+    document.getElementsByClassName("featured-flex-container")[0].addEventListener("click", function(){
+      recipeCard.click();
+
+    });
+
+  });
+
+}
+
 //The specific carousels to load on the home page
 async function homeCarousels(numResults) {
   clearCarousels();
 
+  
+
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
-  console.log(localRecipes);
   if (localRecipes && localRecipes.length != 0 && localRecipes[0] != "{}")
     newLoadLocalRecipes();
   else
@@ -367,21 +427,24 @@ async function dessertCarousels(numResults) {
 //Search spoonacular for the value currently in the search bar
 //Param: searchingFromHero is true if search is clicked from the hero search bar, false if from the top search bar
 async function searchCarousels(searchingFromHero) {
-  clearCarousels();
-
   let query = "";
 
   if (!searchingFromHero) query = document.getElementById("topSearch").value;
   else query = document.getElementById("heroSearchBar").value;
 
-  await createCarousel(
-    query,
-    numSearchResults,
-    "Top Results",
-    recipesDisplayed
-  );
-  //await createCarousel(query, numSearchResults, "Vegetarian Options", recipesDisplayed);
-  //await createCarousel(query, numSearchResults, "Vegan Options", recipesDisplayed);
+    router.setExpand("search#" + query, async function(){
+      clearCarousels();
+      await createCarousel(
+        query,
+        numSearchResults * 3,
+        "Top Results",
+        recipesDisplayed
+      );
+
+    });
+
+    router.navigate("search#" + query, false);
+
 }
 
 /* @function the function creates a carousel and attach the carousel to the main page
@@ -418,7 +481,6 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
       bindRecipeExpand(recipeCard, function () {
         fetchById(recipeCard.data.id).then(function (res) {
           recipeCard.data.isLocal = false; //Mark as not a local recipe
-          console.log(recipeCard.data);
           document
             .querySelector(".section-recipes-expand")
             .classList.add("seen");
@@ -432,11 +494,9 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
 
       localRecipe[i] = recipeCard;
 
-      //Test
-      if (i < numRecipesShown) {
-        // show only three recipe in each carousel
-        carousel.appendChild(recipeCard);
-      }
+      //Ensure the correct amount of cards per carousel display
+      if (i < numRecipesShown) carousel.appendChild(recipeCard);
+      
     }
 
     // append showMore button to the carousel.
@@ -460,15 +520,10 @@ function newLoadLocalRecipes() {
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));
   let stringifiedRecipies = [];
 
-  console.log(localRecipes);
-  console.log(localRecipes[0]);
 
   //Parse each stored recipe from json format back into js-useable data
   //(localStorage only takes strings so anything stored locally has to be stored in json and then parsed back upon retrieval)
   for (let i = 0; i < localRecipes.length; i++) {
-    console.log(i);
-    console.log(localRecipes[i]);
-    console.log(JSON.parse(localRecipes[i]));
     stringifiedRecipies[i] = JSON.parse(localRecipes[i]);
   }
 
@@ -481,11 +536,8 @@ function newLoadLocalRecipes() {
   for (let i = 0; i < stringifiedRecipies.length; i++) {
     let newCard = document.createElement("recipe-card");
     if (stringifiedRecipies[i].data) newCard.data = stringifiedRecipies[i].data;
-    //AAAAAAAAAAAAAAAAAA
     else newCard.data = stringifiedRecipies[i].json;
     newCardsArray[i] = newCard;
-
-    console.log(newCard);
 
     bindRecipeExpand(newCard, function () {
       document.querySelector(".section-recipes-expand").classList.add("seen"); //swap add and remove

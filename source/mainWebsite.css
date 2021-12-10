@@ -20,7 +20,6 @@ nav {
 
 ul {
   list-style-type: none;
-  /** text-align: center;**/
   width: 30rem;
   margin: 0;
   padding: 0;
@@ -47,7 +46,6 @@ ul li ul {
 ul li ul li {
   width: 11.9rem;
   z-index: 1;
-  /** box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; **/
 }
 
 ul li ul li:hover {
@@ -101,11 +99,6 @@ li a:hover {
   display: inline-block;
 }
 
-/*.hero h1 {
-  font-size: 4.5em;
-  margin-bottom: 0.7em;
-  color: white;
-  margin-left: 2em;*/
 
 .top-bar {
   display: flex;
@@ -491,8 +484,6 @@ li a:hover {
 .back,
 .forward {
   cursor: pointer;
-  /*position: absolute;
-  top: 48%;*/
   width: auto;
   height: 20px;
   margin-top: -23px;
@@ -523,7 +514,6 @@ li a:hover {
 .back:after,
 .forward:before,
 .forward:after {
-  /*position: absolute;*/
   content: "";
   width: 100%;
   height: 100%;

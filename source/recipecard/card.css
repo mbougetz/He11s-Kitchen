@@ -10,6 +10,14 @@
   justify-content: center;
 }*/
 
+@media screen and (max-width: 1000px) {
+  .recipes-wrapper > card-carousel {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
 .recipes-wrapper > card-carousel {
   display: grid;
   grid-template-columns: repeat(3, minmax(12rem, 16rem));

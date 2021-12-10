@@ -397,7 +397,10 @@ async function dinnerCarousels(numResults) {
     recipesDisplayed
   );
 }
-
+/**
+ * 
+ * @param {*} numResults 
+ */
 //The specific carousels to load on the dessert page
 async function dessertCarousels(numResults) {
   clearCarousels();

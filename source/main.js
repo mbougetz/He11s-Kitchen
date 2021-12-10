@@ -53,6 +53,8 @@ function initLocalStorage() {
     let emptyArr = [];
     localStorage.setItem("localRecipes", JSON.stringify(emptyArr));
   }
+
+  //localStorage.clear();
 }
 
 function initEditMode() {
@@ -300,6 +302,7 @@ async function populateFeaturedRecipe(recipeID){
 async function homeCarousels(numResults) {
   clearCarousels();
 
+  
 
   //Load local recipe carousel if any local recipes are stored; else load a pasta carousel
   let localRecipes = JSON.parse(localStorage.getItem("localRecipes"));

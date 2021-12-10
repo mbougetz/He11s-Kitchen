@@ -198,6 +198,7 @@ function addRecipe() {
     extendedIngredients: recipeIngredientArr,
     instructions: recipeInstructions, //used to be property directions
     isLocal: true, //Designates card created as being a local recipe, not one fetched from spoonacular
+    originLocal: true,
   };
 
   //Create a new recipe card, pass the data into it

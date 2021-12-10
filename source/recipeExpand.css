@@ -22,7 +22,7 @@ main {
 /* the image/description section */
 .recipe-desc-exp {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   column-gap: 1em;
   row-gap: 1em;
   /* border-radius: 25px; */

@@ -620,3 +620,58 @@ button.showLess {
   justify-content: center;
   align-items: center;
 }
+
+@media screen and (max-width: 1000px) {
+  .top-bar {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .carousel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top-bar nav {
+    display: block;
+    width: 100vw;
+  }
+
+  .top-bar nav img {
+    margin-left: 43vw;
+  }
+
+  .top-bar nav ul {
+    margin: auto;
+  }
+  .top-bar nav li {
+    width: 50vw;
+    text-align: center;
+    left: 30%;
+  }
+  .top-bar nav li ul {
+    width: 50vw;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 1;
+  }
+  .top-bar ul li ul li:hover {
+    background-color: rgb(189, 160, 124);
+  }
+
+  ul li:hover > ul,
+  ul li ul:hover {
+    background-color: grey;
+    visibility: visible;
+    opacity: 1;
+    display: block;
+    text-decoration: 3px underline #f55442;
+  }
+
+  .search-box {
+    margin: 24px;
+  }
+}

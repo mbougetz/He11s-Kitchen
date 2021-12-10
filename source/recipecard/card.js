@@ -12,6 +12,7 @@ class Card extends HTMLElement {
     const cardArticle = document.createElement("article");
 
     cardStyle.innerHTML = `
+
         .recipes-wrapper {
             display: grid;
             grid-template-columns: repeat(3, minmax(12rem, 16rem));

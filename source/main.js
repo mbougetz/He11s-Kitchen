@@ -5,6 +5,7 @@ const recipeData = {}; // used to access the recipe data from Spoonacular
 
 const numSearchResults = 12; //Number of query results retrieved at a time
 const recipesDisplayed = 3; //Max number of recipes displayed at a time per carousel
+const featuredRecipeID = 608725; //Current featured recipe to display; set manually by a site maintainer
 
 const router = new Router(function () {
   document.querySelector(".section-recipes-expand").classList.remove("seen");
@@ -26,7 +27,11 @@ async function init() {
   //Initialize localStorage for use
   initLocalStorage();
 
+  //Initialize variable keeping track of whether a recipe is to be edited
   initEditMode();
+
+  //Fill featured recipe on home page with recipe info
+  populateFeaturedRecipe(featuredRecipeID);
 
   //Bind search events to search bar
   bindSubPages();
@@ -237,6 +242,66 @@ function clearCarousels() {
       currCarouselTitles[i].remove();
     }
   }
+}
+
+async function populateFeaturedRecipe(recipeID){
+  await fetchById(recipeID).then(function(res){
+    console.log(res);
+
+    console.log(res.title);
+  
+
+  
+
+
+    let featImgWrapper = document.getElementsByClassName("featured-flex-item");
+    let featImg = document.createElement("img");
+    featImg.setAttribute("src", res.image);
+    featImg.setAttribute("alt", "featured-recipe"
+    );
+    featImgWrapper[0].appendChild(featImg);
+
+    let featTextWrapper = document.getElementsByClassName("featured-flex-item featured-text");
+
+    let featTitle = document.createElement("h2");
+    featTitle.innerText = res.title;
+    let featBreak = document.createElement("br");
+    let featDesc = document.createElement("p");
+    featDesc.innerText = `Whip up this perfect ` + res.title + ` for ` + res.dishTypes[0] + `! It's 
+    surprisingly easy and oh so delicious with a prep time of only ` + res.readyInMinutes + ` minutes!`;
+
+    featTextWrapper[0].appendChild(featTitle);
+    featTextWrapper[0].appendChild(featBreak);
+    featTextWrapper[0].appendChild(featDesc);
+
+    
+
+
+    let recipeCard = document.createElement("recipe-card");
+    recipeCard.data = res;
+    bindRecipeExpand(recipeCard, function () {
+      fetchById(recipeID).then(function (res) {
+        recipeCard.data.isLocal = false; //Mark as not a local recipe
+        document
+          .querySelector(".section-recipes-expand")
+          .classList.add("seen");
+        document
+          .querySelector(".section-recipes-display")
+          .classList.remove("seen");
+        document.querySelector(".featured").classList.remove("seen"); //test
+        document.querySelector("recipe-expand").data = res;
+      });
+    });
+
+
+    document.getElementsByClassName("featured-flex-container")[0].addEventListener("click", function(){
+
+      recipeCard.click();
+
+    });
+
+  });
+
 }
 
 //The specific carousels to load on the home page

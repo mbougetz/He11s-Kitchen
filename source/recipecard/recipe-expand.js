@@ -320,7 +320,7 @@ class RecipeExpand extends HTMLElement {
       localStorage.setItem("recipeDataToEdit", JSON.stringify(cardData));
 
       //Navigate to the crud page
-      window.location.href = "crud.html"; //redirect to crud
+      window.location.href = "crud/crud.html"; //redirect to crud
     });
 
     const deleteIcon = document.createElement("img");

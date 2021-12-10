@@ -145,8 +145,6 @@ function delOldRecipe(){
   //Push updated local recipe array back to localStorage
   localStorage.setItem("localRecipes", JSON.stringify(newLocalRecipeArr));
 
-  alert("deleted old recipe with id: " + oldRecipeID);
-
 }
 
 //Enter the recipe data to edit into the crud input boxes

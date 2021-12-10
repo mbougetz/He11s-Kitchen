@@ -31,12 +31,12 @@ function init() {
 
 //Changes page source to crud.html; reruns init function because of how js works.
 function redirectToCRUD() {
-  window.location.href = "crud.html";
+  window.location.href = "crud/crud.html";
 }
 
 //Change page source to editRecipe.html
 function redirectToEdit(){
-  window.location.href = "editRecipe.html";
+  window.location.href = "crud/editRecipe.html";
 }
 
 var numIngredient = 1;
@@ -117,13 +117,12 @@ function delOldRecipe(){
   let removeIndex = -1;
   for(let i = 0; i < stringifiedRecipies.length; i++){   
     
-    console.log(oldRecipeID);
     if(stringifiedRecipies[i].data) {
-      //console.log(stringifiedRecipies[i].data.id);
+
       if(stringifiedRecipies[i].data.id == oldRecipeID) removeIndex = i;
     }
     else if(stringifiedRecipies[i].json) {
-      //console.log(stringifiedRecipies[i].json.id);
+
       if(stringifiedRecipies[i].json.id == oldRecipeID) removeIndex = i;
     }
   }
@@ -230,6 +229,6 @@ function addRecipe() {
 
 function redirectToIndex() {
   deleteOldRecipe = false;
-  window.location.href = "index.html";
+  window.location.href = "/source/index.html";
 }
 

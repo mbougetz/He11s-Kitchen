@@ -443,11 +443,16 @@ class RecipeExpand extends HTMLElement {
 
     for (let i = 0; i < cardData.extendedIngredients.length; i++) {
       const ingredient = document.createElement("li");
-      if (cardData.extendedIngredients[i].originalString)
+      if (cardData.extendedIngredients[i].originalString){
+        //console.log(JSON.stringify(cardData.extendedIngredients[i].originalString));
         ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i].originalString}</span>`;
-      else
-        ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i]}</span>`;
-      ingredientsTable.appendChild(ingredient);
+    } else {
+        //console.log(JSON.stringify(cardData.extendedIngredients[i]));
+        //ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i]}</span>`;
+        ingredient.innerHTML = `<input type="checkbox" class="ingredientsBox"/><span>${cardData.extendedIngredients[i].original}</span>`;
+        ingredientsTable.appendChild(ingredient);
+
+      }
     }
 
     ingredientDesc.appendChild(ingredTitle);

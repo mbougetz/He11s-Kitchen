@@ -1,4 +1,4 @@
-import { fetchParams, fetchById } from "./service/api.js";
+import { fetchParams, fetchById , getRecipe, queryApi} from "./service/api.js";
 import { Router } from "./Router.js";
 const recipes = []; // instead of using json files, we want recipes from the API
 const recipeData = {}; // used to access the recipe data from Spoonacular
@@ -248,7 +248,8 @@ function clearCarousels() {
 
 //Fill the featured recipe element on the home page with retrieved data
 async function populateFeaturedRecipe(recipeID){
-  await fetchById(recipeID).then(function(res){
+  //await fetchById(recipeID).then(function(res){
+    await getRecipe(recipeID).then(function(res){
 
     let featImgWrapper = document.getElementsByClassName("featured-flex-item");
     let featImg = document.createElement("img");
@@ -275,7 +276,8 @@ async function populateFeaturedRecipe(recipeID){
     let recipeCard = document.createElement("recipe-card");
     recipeCard.data = res;
     bindRecipeExpand(recipeCard, function () {
-      fetchById(recipeID).then(function (res) {
+      //fetchById(recipeID).then(function (res) {
+        getRecipe(recipeID).then(function (res) {
         recipeCard.data.isLocal = false; //Mark as not a local recipe
         document
           .querySelector(".section-recipes-expand")
@@ -459,8 +461,8 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
 
   //used to store fetched recipe that stored in local base
   const localRecipe = [];
-  await fetchParams(
-    `query=${selector}&addRecipeNutrition=true&number=${numRecipes}`
+  //await fetchParams(`query=${selector}&addRecipeNutrition=true&number=${numRecipes}`)
+  await queryApi(selector, numRecipes
   ).then(function (res) {
     const carousel = document.createElement("div");
     // set the div's carousel
@@ -482,7 +484,8 @@ async function createCarousel(selector, numRecipes, title, numRecipesShown) {
       let recipeCard = document.createElement("recipe-card");
       recipeCard.data = res.results[i];
       bindRecipeExpand(recipeCard, function () {
-        fetchById(recipeCard.data.id).then(function (res) {
+        //fetchById(recipeCard.data.id).then(function (res) {
+          getRecipe(recipeCard.data.id).then(function (res) {
           recipeCard.data.isLocal = false; //Mark as not a local recipe
           document
             .querySelector(".section-recipes-expand")

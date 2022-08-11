@@ -14,7 +14,7 @@ export async function fetchById (id) {
         headers: {
           "x-rapidapi-host":
             "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-          "x-rapidapi-key": "e26569aaabmsh3816991676f73b4p175a23jsn09f144d9bffb",
+          "x-rapidapi-key": "4d388ae5990f41f195ca41c0f0a1a5bb", //"x-rapidapi-key": "e26569aaabmsh3816991676f73b4p175a23jsn09f144d9bffb",
         },
       }
     ).then(function(res) {
@@ -33,7 +33,7 @@ export async function fetchParams (parameters) {
         headers: {
           "x-rapidapi-host":
             "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-          "x-rapidapi-key": "e26569aaabmsh3816991676f73b4p175a23jsn09f144d9bffb",
+          "x-rapidapi-key": "4d388ae5990f41f195ca41c0f0a1a5bb",
         },
       }
     ).then(function(res) {
@@ -42,4 +42,24 @@ export async function fetchParams (parameters) {
     .catch((reason) => reject(reason));
 
   })
+}
+
+export async function queryApi(query, numResults) {
+
+
+  const response = await fetch('https://api.spoonacular.com/recipes/complexSearch?apiKey=' + apiKeys[0] + '&query=' + query + '&number=' + numResults);
+
+
+  return response.json();
+
+}
+
+export async function getRecipe(id) {
+  //Query API by specific recipe id
+  const response = await fetch('https://api.spoonacular.com/recipes/' + id + '/information?apiKey=' + apiKeys[0]);
+
+
+  //Return data in json format
+  return response.json();
+
 }

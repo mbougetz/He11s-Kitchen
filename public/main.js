@@ -9,16 +9,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./source/recipe card/cardCarousel.js":
-/*!********************************************!*\
-  !*** ./source/recipe card/cardCarousel.js ***!
-  \********************************************/
-/***/ (() => {
-
-eval("// CardCarousel.js\nclass CardCarousel extends HTMLElement {\n    constructor() {\n        super();\n        this.attachShadow({ mode: 'open' });\n    }\n\n\n    // paramter is in an array of recipe cards\n    createCardCarousel(recipeCards) {\n        for (let i = 0; i < recipeCards.length; i++) {\n            if (i > 2) {\n                recipeCards[i].classList.add('hidden');\n            }\n            this.shadowRoot.append(recipeCards[i]);\n        }\n    }\n\n    //let nextButton = new CardCarousel(document.querySelector('.forward'));\n    //nextButton = document.querySelector('.forward'); // next 3 recipes\n    //prevButton = document.querySelector('.back'); // last 3 recipes in previous slides\n\n    // when nextButton is clicked, see next 3 recipes\n    //buttons[0].addEventListener('click', nextCards());\n\n    // when prevButton is clicked, see prev 3 recipes\n    //buttons[1].addEventListener('click', prevCards());\n\n    /*\n    * This function will be called in an event listener when the right button is clicked.\n    * The next 3 recipe cards will be shown.\n    */\n    nextCards() {\n        const cards = this.querySelectorAll('recipe-card');\n        for (let i = cards.length - 4; i >= 0; i--) {\n            if (!(cards[i].classList.contains('hidden'))) {\n                cards[i].classList.add('hidden');\n                cards[i + 3].classList.remove('hidden');\n            }\n        }\n    }\n\n    /*\n    * This function will be called in an event listener when the left button is clicked.\n    * The previous 3 recipe cards will be shown.\n    */\n    prevCards() {\n        const cards = this.querySelectorAll('recipe-card');\n        for (let i = 3; i < cards.length; i++) {\n            if (!(cards[i].classList.contains('hidden'))) {\n                cards[i].classList.add('hidden');\n                cards[i - 3].classList.remove('hidden');\n            }\n        }\n    }\n}\ncustomElements.define('card-carousel', CardCarousel);\n\n/*\n* Creating the buttons for next and previous slides of the carousel\n* And adding the event listeners for each button\n*/\nconst nextButton = document.querySelector('.forward'); // next 3 recipes\nconst prevButton = document.querySelector('.back'); // last 3 recipes in previous slides\nnextButton.addEventListener('click', CardCarousel().nextCards());\nprevButton.addEventListener('click', CardCarousel().prevCards());\n\n//# sourceURL=webpack://cse110-sp21-group11/./source/recipe_card/cardCarousel.js?");
-
-/***/ }),
-
 /***/ "./source/recipecard/card.js":
 /*!***********************************!*\
   !*** ./source/recipecard/card.js ***!
@@ -29,26 +19,7 @@ eval("class Card extends HTMLElement{\n    constructor(){\n        super(); //In
 
 /***/ }),
 
-/***/ "./source/recipecard/cardCarousel.js":
-/*!*******************************************!*\
-  !*** ./source/recipecard/cardCarousel.js ***!
-  \*******************************************/
-/***/ (() => {
 
-eval("// CardCarousel.js\n\nclass CardCarousel extends HTMLElement {\n    constructor() {\n        super();\n        this.attachShadow({ mode: 'open' });\n    }\n\n\n    /*\n    * This function will be called in an event listener when the right button is clicked.\n    * The next 3 recipe cards will be shown.\n    */\n    nextCards() {\n        const cards = this.shadowRoot.querySelectorAll('recipe-card');\n        for (let i = cards.length - 4; i >= 0; i--) {\n            if (cards[i].getAttribute('style') != 'display: none') {\n                cards[i].setAttribute('style', 'display: none');\n                cards[i + 3].style.display = '';\n            }\n        }\n    }\n\n    /*\n    * This function will be called in an event listener when the left button is clicked.\n    * The previous 3 recipe cards will be shown.\n    */\n    prevCards() {\n        const cards = this.shadowRoot.querySelectorAll('recipe-card');\n        for (let i = 3; i < cards.length; i++) {\n            if (cards[i].getAttribute('style') != 'display: none') {\n                cards[i].setAttribute('style', 'display: none');\n                cards[i - 3].style.display = '';\n            }\n        }\n    }\n\n\n    // paramter is in an array of recipe cards\n    createCardCarousel(recipeCards) {\n\n        for (let i = 0; i < recipeCards.length; i++) {\n            if (i > 2) {\n                recipeCards[i].setAttribute('style', 'display: none');\n            }\n            this.shadowRoot.append(recipeCards[i]);\n        }\n\n    }\n\n    \n}\n\n\ncustomElements.define('card-carousel', CardCarousel);\n\n//# sourceURL=webpack://cse110-sp21-group11/./source/recipecard/cardCarousel.js?");
-
-/***/ }),
-
-/***/ "./source/recipecard/cardExpand.js":
-/*!*****************************************!*\
-  !*** ./source/recipecard/cardExpand.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nclass expandCard {\n    static routes = {};\n    registerCard = (page, func) => {\n        this[page] = func;\n    }\n\n    navigate = (page) => {\n        if (this[page] == undefined) {\n            return console.error(`this page is undefined: ${page}`);\n        }\n        return this[page]();\n    }\n\n    bindCard = (recipeCard, func) => {\n        registerRoute(recipeCard, func);\n        recipeCard.addEventListener('click', () => {\n            Router.navigate(recipeCard);\n        })\n    }\n}\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (expandCard);\n\n//# sourceURL=webpack://cse110-sp21-group11/./source/recipecard/cardExpand.js?");
-
-/***/ })
 
 /******/ 	});
 /************************************************************************/

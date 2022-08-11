@@ -60,11 +60,8 @@ eval("class Card extends HTMLElement{\n    constructor(){\n        super(); //In
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	__webpack_modules__["./source/recipe card/cardCarousel.js"](0, {}, __webpack_require__);
 /******/ 	__webpack_modules__["./source/recipecard/card.js"](0, {}, __webpack_require__);
-/******/ 	__webpack_modules__["./source/recipecard/cardCarousel.js"](0, {}, __webpack_require__);
-/******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./source/recipecard/cardExpand.js"](0, __webpack_exports__, __webpack_require__);
+
 /******/ 	
 /******/ })()
 ;

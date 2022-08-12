@@ -1,5 +1,5 @@
 # *Project* #
-[Deployed Website](https://mbougetz.github.io/Team-11-Docs/)
+[Deployed Website](https://mbougetz.github.io/He11s-Kitchen/source/index.html)
 
 [Team Page](https://github.com/cse110-fa21-group11/cse110-sp21-group11/blob/main/admin/team.md)
 
